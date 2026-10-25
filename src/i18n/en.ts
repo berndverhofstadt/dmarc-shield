@@ -198,6 +198,7 @@ export const en = {
   'tip.pin':
     'Tip: pin this pane (pin icon at the top) to check every message automatically. Pinning is available for Microsoft 365 work and school accounts.',
 
+  'footer.refresh': 'Refresh',
   'footer.privacy': 'Privacy',
   'footer.about': 'About',
   'footer.version': 'Version {version}',

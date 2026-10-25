@@ -45,6 +45,16 @@
 
       <section id="dns" class="dns" hidden aria-live="polite"></section>
 
+      <section id="findings" class="findings" aria-labelledby="findings-heading" hidden>
+        <h2 id="findings-heading" class="visually-hidden" data-i18n="findings.heading"></h2>
+        <ul id="findings-list"></ul>
+      </section>
+
+      <section id="details" class="details" aria-labelledby="details-heading" hidden>
+        <h2 id="details-heading" data-i18n="details.heading"></h2>
+        <dl id="details-list"></dl>
+      </section>
+
       <section
         id="bimi"
         class="bimi"
@@ -62,16 +72,6 @@
           <div id="bimi-text"></div>
           <div id="bimi-actions" class="actions"></div>
         </div>
-      </section>
-
-      <section id="findings" class="findings" aria-labelledby="findings-heading" hidden>
-        <h2 id="findings-heading" class="visually-hidden" data-i18n="findings.heading"></h2>
-        <ul id="findings-list"></ul>
-      </section>
-
-      <section id="details" class="details" aria-labelledby="details-heading" hidden>
-        <h2 id="details-heading" data-i18n="details.heading"></h2>
-        <dl id="details-list"></dl>
       </section>
 
       <details id="raw" class="panel" hidden>
@@ -118,6 +118,13 @@
       <p id="pin-tip" class="help" hidden data-i18n="tip.pin"></p>
 
       <footer class="footer">
+        <button
+          type="button"
+          id="refresh"
+          class="link-button"
+          hidden
+          data-i18n="footer.refresh"
+        ></button>
         <a
           href="./privacy.html"
           target="_blank"

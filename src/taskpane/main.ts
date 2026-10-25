@@ -59,6 +59,8 @@ let settings: Settings;
 let current: Current | null = null;
 /** Incremented on every evaluation so late async results for a previous item are dropped. */
 let generation = 0;
+/** Item the pane is currently showing (or evaluating); null when none is selected. */
+let shownKey: string | null | undefined;
 
 // ---------------------------------------------------------------- rendering
 
@@ -387,6 +389,7 @@ async function evaluateOfficeItem(): Promise<void> {
   current = null;
   hideResultSections();
   const item = currentItem();
+  shownKey = item ? itemKey(item) : null;
   if (!item) return renderVerdict(simpleView('noitem'));
   if (!canReadHeaders(item)) return renderVerdict(simpleView('unsupported'));
   renderVerdict(simpleView('loading'));
@@ -401,6 +404,26 @@ async function evaluateOfficeItem(): Promise<void> {
     if (gen === generation)
       renderVerdict(simpleView('error', e instanceof Error ? e.message : String(e)));
   }
+}
+
+/**
+ * Outlook only fires ItemChanged while the pane is pinned, and pinning isn't
+ * available everywhere (e.g. Outlook.com), yet the pane may stay open when the
+ * user selects another message. So we also notice the change ourselves: when the
+ * pane becomes visible or focused (e.g. the add-in button is clicked again) and
+ * once per second while visible. This only reads a local property.
+ */
+function watchItem(): void {
+  const check = () => {
+    if (document.visibilityState !== 'visible') return;
+    const item = currentItem();
+    const key = item ? itemKey(item) : null;
+    if (key !== shownKey) void evaluateOfficeItem();
+  };
+  onItemChanged(() => void evaluateOfficeItem());
+  document.addEventListener('visibilitychange', check);
+  window.addEventListener('focus', check);
+  setInterval(check, 1000);
 }
 
 function wireSettings(onChange: (before: Settings) => void): void {
@@ -478,7 +501,11 @@ function startOffice(): void {
   // Pinning is the only way to check messages without opening the pane each time.
   $('pin-tip').hidden = false;
   wireSettings(rerender);
-  onItemChanged(() => void evaluateOfficeItem());
+  // Last resort if Outlook keeps the pane open without updating its item context.
+  const refresh = $('refresh');
+  refresh.hidden = false;
+  refresh.addEventListener('click', () => location.reload());
+  watchItem();
   void evaluateOfficeItem();
 }
 

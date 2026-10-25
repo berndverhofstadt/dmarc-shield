@@ -204,6 +204,7 @@ export const nl: Messages = {
   'tip.pin':
     'Tip: maak dit deelvenster vast (punaise bovenaan) om elk bericht automatisch te controleren. Vastmaken is beschikbaar voor Microsoft 365-werk- en schoolaccounts.',
 
+  'footer.refresh': 'Vernieuwen',
   'footer.privacy': 'Privacy',
   'footer.about': 'Over',
   'footer.version': 'Versie {version}',

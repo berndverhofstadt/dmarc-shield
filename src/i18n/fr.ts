@@ -206,6 +206,7 @@ export const fr: Messages = {
   'tip.pin':
     'Astuce : épinglez ce volet (icône en haut) pour vérifier automatiquement chaque message. L’épinglage est disponible pour les comptes professionnels et scolaires Microsoft 365.',
 
+  'footer.refresh': 'Actualiser',
   'footer.privacy': 'Confidentialité',
   'footer.about': 'À propos',
   'footer.version': 'Version {version}',

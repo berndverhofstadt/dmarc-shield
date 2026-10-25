@@ -209,6 +209,7 @@ export const de: Messages = {
   'tip.pin':
     'Tipp: Heften Sie diesen Bereich an (Pinnadel oben), um jede Nachricht automatisch zu prüfen. Anheften ist für Geschäfts- und Schulkonten von Microsoft 365 verfügbar.',
 
+  'footer.refresh': 'Aktualisieren',
   'footer.privacy': 'Datenschutz',
   'footer.about': 'Info',
   'footer.version': 'Version {version}',
