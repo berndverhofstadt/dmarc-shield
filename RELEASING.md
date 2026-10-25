@@ -60,6 +60,9 @@ address (blue, `p=none`), a mailing list (ARC), the junk folder (red).
 ## First-time setup (once)
 
 1. GitHub repository → *Settings → Pages → Source: GitHub Actions*.
+   Then *Settings → Environments → github-pages → Deployment branches and
+   tags*: add the tag rule `v*.*.*`. By default only `main` may deploy, and
+   the release workflow deploys from tags.
 2. *Settings → Security → Private vulnerability reporting: enable* (SECURITY.md
    relies on it).
 3. Protect `main`; require the CI workflow.
