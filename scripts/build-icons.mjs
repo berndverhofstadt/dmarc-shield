@@ -23,7 +23,11 @@ function png(svg, size, background) {
 
 const targets = [
   // Manifest ribbon icons (16/32/80) and IconUrl/HighResolutionIconUrl (64/128)
-  ...[16, 20, 24, 32, 40, 48].map((s) => ({ out: `public/assets/icon-${s}.png`, svg: small, size: s })),
+  ...[16, 20, 24, 32, 40, 48].map((s) => ({
+    out: `public/assets/icon-${s}.png`,
+    svg: small,
+    size: s,
+  })),
   ...[64, 80, 128, 256].map((s) => ({ out: `public/assets/icon-${s}.png`, svg: logo, size: s })),
   // Partner Center logo: PNG between 216 and 350 px square (policy 100.3)
   { out: 'brand/store/logo-300.png', svg: logo, size: 300 },
