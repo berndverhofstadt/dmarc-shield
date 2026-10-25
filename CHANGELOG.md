@@ -21,6 +21,13 @@ All notable changes are listed here. The format follows
 - Content Security Policy `connect-src` is now `https:`, because BIMI hosts are
   arbitrary. Network code remains confined to two opt-in modules.
 - DNS name validation accepts service labels such as `_bimi` in any position.
+- The BIMI section is shown below the details.
+
+### Fixed
+
+- The pane now updates when another message is selected even if it isn't
+  pinned (Outlook only sends ItemChanged to pinned panes, and Outlook.com can't
+  pin). A Refresh link reloads the pane as a last resort.
 
 ## [1.0.0] - 2026-10-25
 
