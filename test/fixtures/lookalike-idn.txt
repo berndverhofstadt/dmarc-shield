@@ -1,0 +1,8 @@
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@xn--pypal-4ve.com;
+       spf=pass smtp.mailfrom=xn--pypal-4ve.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=xn--pypal-4ve.com
+Received: from mail.xn--pypal-4ve.com by mx.google.com; Sat, 25 Oct 2026 01:02:03 +0000
+From: PayPal <service@xn--pypal-4ve.com>
+To: bernd@example.net
+Subject: Your account is limited

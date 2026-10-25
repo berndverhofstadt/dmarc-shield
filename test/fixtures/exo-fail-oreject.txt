@@ -1,0 +1,19 @@
+Received: from DU2PEPF00001234.eurprd01.prod.outlook.com (2603:10a6:10:1::1) by
+ AM9PR01MB1234.eurprd01.prod.exchangelabs.com with Microsoft SMTP Server id
+ 15.20.8000.1; Sat, 25 Oct 2026 09:10:01 +0000
+Authentication-Results: spf=fail (sender IP is 203.0.113.66)
+ smtp.mailfrom=bank.example; dkim=none (message not signed)
+ header.d=none;dmarc=fail action=oreject
+ header.from=bank.example;compauth=fail reason=000
+Received-SPF: Fail (protection.outlook.com: domain of bank.example does not
+ designate 203.0.113.66 as permitted sender) receiver=protection.outlook.com;
+ client-ip=203.0.113.66; helo=evil.example;
+Received: from evil.example (203.0.113.66) by
+ DU2PEPF00001234.mail.protection.outlook.com (10.167.8.1) with Microsoft SMTP
+ Server id 15.20.8000.1 via Frontend Transport; Sat, 25 Oct 2026 09:10:00 +0000
+From: Bank Security <security@bank.example>
+To: bernd@contoso.example
+Subject: Verify your account
+Date: Sat, 25 Oct 2026 09:09:58 +0000
+Message-ID: <phish1@evil.example>
+X-MS-Exchange-Organization-AuthAs: Anonymous

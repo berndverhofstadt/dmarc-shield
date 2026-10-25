@@ -1,0 +1,8 @@
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@example.org;
+       spf=pass smtp.mailfrom=example.org;
+       dmarc=none header.from=example.org
+Received: from mail.example.org by mx.google.com; Sat, 25 Oct 2026 01:02:03 +0000
+From: Example <hello@example.org>
+To: bernd@example.net
+Subject: No DMARC

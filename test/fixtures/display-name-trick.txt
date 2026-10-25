@@ -1,0 +1,8 @@
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@evil.example;
+       spf=pass smtp.mailfrom=evil.example;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=evil.example
+Received: from mail.evil.example by mx.google.com; Sat, 25 Oct 2026 01:02:03 +0000
+From: "security@bank.example" <alerts@evil.example>
+To: bernd@example.net
+Subject: Security alert

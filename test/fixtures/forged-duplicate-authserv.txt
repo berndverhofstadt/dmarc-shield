@@ -1,0 +1,16 @@
+Delivered-To: bernd@example.net
+Return-Path: <x@evil.example>
+Received: from evil.example (evil.example. [203.0.113.66])
+        by mx.google.com with ESMTP id c3si1;
+        Sat, 25 Oct 2026 01:02:03 -0700 (PDT)
+Received-SPF: fail (google.com: domain of x@evil.example does not designate 203.0.113.66 as permitted sender)
+Authentication-Results: mx.google.com;
+       spf=fail smtp.mailfrom=x@evil.example;
+       dmarc=fail (p=REJECT sp=REJECT dis=QUARANTINE) header.from=bank.example
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@bank.example;
+       spf=pass smtp.mailfrom=bank.example;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=bank.example
+From: Bank <security@bank.example>
+To: bernd@example.net
+Subject: Urgent

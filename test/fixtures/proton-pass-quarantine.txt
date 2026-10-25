@@ -1,0 +1,18 @@
+Return-Path: <news@example.org>
+X-Original-To: bernd@proton.example
+Delivered-To: bernd@proton.example
+Authentication-Results: mail.protonmail.ch; dmarc=pass (p=quarantine dis=none)
+ header.from=example.org
+Authentication-Results: mail.protonmail.ch; spf=pass smtp.mailfrom=example.org
+Authentication-Results: mail.protonmail.ch; arc=none smtp.remote-ip=192.0.2.77
+Authentication-Results: mail.protonmail.ch; dkim=pass (2048-bit key)
+ header.d=example.org header.i=@example.org header.b="Xy12AbCd"
+Received: from mail.example.org (mail.example.org [192.0.2.77]) (using TLSv1.3
+ with cipher TLS_AES_256_GCM_SHA384 (256/256 bits) key-exchange X25519 server-signature
+ RSA-PSS (2048 bits) server-digest SHA256) (No client certificate requested) by
+ mailin012.protonmail.ch (Postfix) with ESMTPS id 4XyZ12AbCd for <bernd@proton.example>;
+ Sat, 25 Oct 2026 07:08:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=example.org; s=s1; h=from:to:subject; bh=Ym9keQ==; b=c2ln
+From: Example News <news@example.org>
+To: bernd@proton.example
+Subject: Weekly digest

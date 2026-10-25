@@ -1,0 +1,28 @@
+Delivered-To: bernd@example.net
+Received: by 2002:a05:6a10:1234:b0:5d1:1234:abcd with SMTP id x20csp123456pxb;
+        Sat, 25 Oct 2026 01:02:03 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1792915323; cv=none;
+        d=google.com; s=arc-20240605;
+        b=c2VhbGdvb2dsZQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=to:subject:message-id:date:from:mime-version:dkim-signature;
+        bh=Ym9keQ==; b=YW1zZ29vZ2xl
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@example.com header.s=20230601 header.b=AbCdEf12;
+       spf=pass (google.com: domain of bounce@example.com designates 192.0.2.10 as permitted sender) smtp.mailfrom=bounce@example.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=example.com
+Return-Path: <bounce@example.com>
+Received: from mail.example.com (mail.example.com. [192.0.2.10])
+        by mx.google.com with SMTPS id a1-20020a170902ab0100b001234567890si1234567plb.123.2026.10.25.01.02.03
+        for <bernd@example.net>
+        (Google Transport Security);
+        Sat, 25 Oct 2026 01:02:03 -0700 (PDT)
+Received-SPF: pass (google.com: domain of bounce@example.com designates 192.0.2.10 as permitted sender) client-ip=192.0.2.10;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@example.com header.s=20230601 header.b=AbCdEf12;
+       spf=pass (google.com: domain of bounce@example.com designates 192.0.2.10 as permitted sender) smtp.mailfrom=bounce@example.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=example.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=example.com; s=20230601; h=from:to:subject; bh=Ym9keQ==; b=c2ln
+From: Example <hello@example.com>
+To: bernd@example.net
+Subject: Welcome

@@ -1,0 +1,8 @@
+Authentication-Results: mx.google.com;
+       spf=fail smtp.mailfrom=evil.example;
+       dmarc=fail (p=REJECT sp=REJECT dis=QUARANTINE) header.from=contoso.example
+Received: from evil.example by mx.google.com; Sat, 25 Oct 2026 01:02:03 +0000
+From: IT <it@contoso.example>
+To: bernd@example.net
+Subject: Password reset
+X-MS-Exchange-Organization-AuthAs: Internal

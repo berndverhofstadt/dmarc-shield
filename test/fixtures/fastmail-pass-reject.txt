@@ -1,0 +1,76 @@
+Return-Path: <bounce@example.com>
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+	 by sloti12345 (Cyrus 3.11.0) with LMTPA;
+	 Sat, 25 Oct 2026 05:06:07 -0400
+X-Cyrus-Session-Id: sloti12345-1792925167-1234567-2-123456789
+X-Sieve: CMU Sieve 3.0
+X-Spam-known-sender: no
+X-Spam-score: 0.0
+Received-SPF: pass
+    (example.com: 192.0.2.10 is authorized to use 'bounce@example.com' in 'mfrom' identity (mechanism 'ip4:192.0.2.0/24' matched))
+    receiver=mx6.messagingengine.com;
+    identity=mailfrom;
+    envelope-from="bounce@example.com";
+    helo=mail.example.com;
+    client-ip=192.0.2.10
+Received: from mx6.messagingengine.com (localhost [127.0.0.1])
+	by mailmx.nyi.internal (Postfix) with ESMTP id 4F1A2B3C4D
+	for <bernd@fastmail.example>; Sat, 25 Oct 2026 05:06:07 -0400 (EDT)
+Received: from mx6.messagingengine.com (localhost [127.0.0.1])
+    by mx6.messagingengine.com (Authentication Milter) with ESMTP
+    id 1A2B3C4D5E6.5F6A7B8C9D0;
+    Sat, 25 Oct 2026 05:06:07 -0400
+ARC-Seal: i=1; a=rsa-sha256; cv=none; d=messagingengine.com; s=fm2; t=
+    1792925167; b=ZmFzdHNlYWw=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=
+    messagingengine.com; h=from:to:subject:date; s=fm2; t=1792925167; bh=Ym9keQ==; b=ZmFzdGFtcw==
+ARC-Authentication-Results: i=1; mx6.messagingengine.com;
+    dkim=pass (2048-bit rsa key sha256) header.d=example.com
+      header.i=@example.com header.b=AbCd header.a=rsa-sha256
+      header.s=fm1 x-bits=2048;
+    dmarc=pass policy.published-domain-policy=reject
+      policy.applied-disposition=none policy.evaluated-disposition=none
+      (p=reject,d=none,d.eval=none) policy.policy-from=p
+      header.from=example.com;
+    iprev=pass smtp.remote-ip=192.0.2.10 (mail.example.com);
+    spf=pass smtp.mailfrom=bounce@example.com
+      smtp.helo=mail.example.com;
+    x-aligned-from=pass (Address match);
+    x-me-sender=none;
+    x-ptr=pass smtp.helo=mail.example.com policy.ptr=mail.example.com;
+    x-return-mx=pass header.domain=example.com policy.is_org=yes
+      (MX Records found: mx.example.com);
+    x-return-mx=pass smtp.domain=example.com policy.is_org=yes
+      (MX Records found: mx.example.com);
+    x-tls=pass smtp.version=TLSv1.3 smtp.cipher=TLS_AES_256_GCM_SHA384
+      smtp.bits=256/256;
+    x-vs=clean score=0 state=0
+Authentication-Results: mx6.messagingengine.com;
+    dkim=pass (2048-bit rsa key sha256) header.d=example.com
+      header.i=@example.com header.b=AbCd header.a=rsa-sha256
+      header.s=fm1 x-bits=2048;
+    dmarc=pass policy.published-domain-policy=reject
+      policy.applied-disposition=none policy.evaluated-disposition=none
+      (p=reject,d=none,d.eval=none) policy.policy-from=p
+      header.from=example.com;
+    iprev=pass smtp.remote-ip=192.0.2.10 (mail.example.com);
+    spf=pass smtp.mailfrom=bounce@example.com
+      smtp.helo=mail.example.com;
+    x-aligned-from=pass (Address match);
+    x-me-sender=none;
+    x-tls=pass smtp.version=TLSv1.3 smtp.cipher=TLS_AES_256_GCM_SHA384
+      smtp.bits=256/256;
+    x-vs=clean score=0 state=0
+X-ME-Authentication-Results: mx6.messagingengine.com;
+    x-aligned-from=pass (Address match);
+    x-return-mx=pass header.domain=example.com policy.is_org=yes
+X-ME-VSCause: gggruggvucftvghtrhhoucdtuddrgeduledr
+Received: from mail.example.com (mail.example.com [192.0.2.10])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx6.messagingengine.com (Postfix) with ESMTPS
+	for <bernd@fastmail.example>; Sat, 25 Oct 2026 05:06:07 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=example.com; s=fm1; h=from:to:subject; bh=Ym9keQ==; b=c2ln
+From: "Example Team" <team@example.com>
+To: bernd@fastmail.example
+Subject: Monthly update

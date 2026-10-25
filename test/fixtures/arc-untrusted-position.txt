@@ -1,0 +1,20 @@
+Authentication-Results: spf=fail (sender IP is 203.0.113.66)
+ smtp.mailfrom=evil.example; dkim=none (message not signed)
+ header.d=none;dmarc=fail action=oreject
+ header.from=bank.example;compauth=fail reason=000
+Received: from evil.example (203.0.113.66) by
+ DU2PEPF00001234.mail.protection.outlook.com (10.167.8.1) with Microsoft SMTP
+ Server id 15.20.8000.1; Sat, 25 Oct 2026 09:10:00 +0000
+ARC-Seal: i=2; a=rsa-sha256; cv=pass; d=microsoft.com; s=arcselector10001; b=ZmFrZQ==
+ARC-Message-Signature: i=2; a=rsa-sha256; d=microsoft.com; s=arcselector10001; h=from; bh=Ym9keQ==; b=ZmFrZQ==
+ARC-Authentication-Results: i=2; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=bank.example; dmarc=pass action=none header.from=bank.example;
+ dkim=pass header.d=bank.example; arc=pass (0 oda=1 ltdi=1
+ spf=[1,1,smtp.mailfrom=bank.example] dkim=[1,1,header.d=bank.example]
+ dmarc=[1,1,header.from=bank.example])
+ARC-Seal: i=1; a=rsa-sha256; cv=none; d=bank.example; s=arc; b=ZmFrZQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; d=bank.example; s=arc; h=from; bh=Ym9keQ==; b=ZmFrZQ==
+ARC-Authentication-Results: i=1; mx.bank.example; dmarc=pass (p=REJECT) header.from=bank.example
+From: Bank <security@bank.example>
+To: bernd@contoso.example
+Subject: Urgent

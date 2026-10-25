@@ -1,0 +1,26 @@
+Received: from DU2PEPF00001234.eurprd01.prod.outlook.com (2603:10a6:10:1::1) by
+ AM9PR01MB1234.eurprd01.prod.exchangelabs.com with Microsoft SMTP Server id
+ 15.20.8000.1; Sat, 25 Oct 2026 12:00:01 +0000
+Authentication-Results: spf=fail (sender IP is 198.51.100.7)
+ smtp.mailfrom=lists.example.org; dkim=fail (body hash did not verify)
+ header.d=example.com;dmarc=fail action=none
+ header.from=example.com;compauth=pass reason=130
+Received-SPF: Fail (protection.outlook.com: domain of lists.example.org does
+ not designate 198.51.100.7 as permitted sender)
+Received: from mail.lists.example.org (198.51.100.7) by
+ DU2PEPF00001234.mail.protection.outlook.com (10.167.8.1) with Microsoft SMTP
+ Server id 15.20.8000.1; Sat, 25 Oct 2026 12:00:00 +0000
+ARC-Seal: i=1; a=rsa-sha256; t=1792929599; cv=none; d=lists.example.org; s=arc1;
+ b=c2VhbA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=lists.example.org;
+ s=arc1; t=1792929599; h=from:to:subject:date; bh=Ym9keQ==; b=YW1z
+ARC-Authentication-Results: i=1; lists.example.org;
+ dkim=pass header.d=example.com header.s=s1 header.b=AbCd;
+ spf=pass smtp.mailfrom=alice@example.com;
+ dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=example.com
+Received: from mail.example.com (192.0.2.25) by mail.lists.example.org; Sat, 25
+ Oct 2026 11:59:59 +0000
+From: Alice <alice@example.com>
+To: dev-list@lists.example.org
+Subject: [dev] Release notes
+List-Id: <dev.lists.example.org>

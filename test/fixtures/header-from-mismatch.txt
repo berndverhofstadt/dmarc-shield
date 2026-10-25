@@ -1,0 +1,8 @@
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@example.com;
+       spf=pass smtp.mailfrom=example.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=example.com
+Received: from mail.example.com by mx.google.com; Sat, 25 Oct 2026 01:02:03 +0000
+From: Bank <security@bank.example>
+To: bernd@example.net
+Subject: Header.from does not match

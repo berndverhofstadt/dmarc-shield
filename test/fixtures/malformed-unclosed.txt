@@ -1,0 +1,4 @@
+Authentication-Results: mx.example.net; dkim=pass (unclosed comment header.d=example.com;
+ dmarc=pass (p=REJECT header.from=example.com
+Received: from mail.example.com by mx.example.net; Sat, 25 Oct 2026 01:02:03 +0000
+From: Example <hello@example.com>

@@ -1,0 +1,14 @@
+Authentication-Results: mx.google.com;
+       arc=fail (signature failed);
+       spf=fail smtp.mailfrom=x@evil.example;
+       dmarc=fail (p=REJECT sp=REJECT dis=QUARANTINE) header.from=bank.example
+Received: from evil.example (evil.example. [203.0.113.66])
+        by mx.google.com with ESMTP id c3si1;
+        Sat, 25 Oct 2026 01:02:03 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; cv=none; d=trusted-forwarder.example; s=arc; b=ZmFrZQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; d=trusted-forwarder.example; s=arc; h=from; bh=Ym9keQ==; b=ZmFrZQ==
+ARC-Authentication-Results: i=1; trusted-forwarder.example;
+       dmarc=pass (p=REJECT) header.from=bank.example
+From: Bank <security@bank.example>
+To: bernd@example.net
+Subject: Urgent

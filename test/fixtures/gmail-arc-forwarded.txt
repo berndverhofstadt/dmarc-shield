@@ -1,0 +1,38 @@
+Delivered-To: bernd@example.net
+Received: by 2002:a05:6a10:1234:b0:5d1:1234:abcd with SMTP id x20csp7654321pxb;
+        Sat, 25 Oct 2026 03:04:05 -0700 (PDT)
+ARC-Seal: i=2; a=rsa-sha256; t=1792922645; cv=pass;
+        d=google.com; s=arc-20240605;
+        b=aTJzZWFs
+ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=list-id:to:subject:message-id:date:from:dkim-signature;
+        bh=Ym9keQ==; b=aTJhbXM=
+ARC-Authentication-Results: i=2; mx.google.com;
+       dkim=pass header.i=@lists.example.org header.s=list header.b=Zz99;
+       arc=pass (i=1 spf=pass spfdomain=example.com dkim=pass dkdomain=example.com dmarc=pass fromdomain=example.com);
+       spf=pass (google.com: domain of dev-bounces@lists.example.org designates 198.51.100.7 as permitted sender) smtp.mailfrom=dev-bounces@lists.example.org;
+       dmarc=fail (p=REJECT sp=REJECT dis=NONE) header.from=example.com
+Return-Path: <dev-bounces@lists.example.org>
+Received: from mail.lists.example.org (mail.lists.example.org. [198.51.100.7])
+        by mx.google.com with ESMTPS id b2-20020a170902ab0100b009876543210si7654321plb.45.2026.10.25.03.04.05
+        for <bernd@example.net>;
+        Sat, 25 Oct 2026 03:04:05 -0700 (PDT)
+Received-SPF: pass (google.com: domain of dev-bounces@lists.example.org designates 198.51.100.7 as permitted sender) client-ip=198.51.100.7;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@lists.example.org header.s=list header.b=Zz99;
+       arc=pass (i=1 spf=pass spfdomain=example.com dkim=pass dkdomain=example.com dmarc=pass fromdomain=example.com);
+       spf=pass (google.com: domain of dev-bounces@lists.example.org designates 198.51.100.7 as permitted sender) smtp.mailfrom=dev-bounces@lists.example.org;
+       dmarc=fail (p=REJECT sp=REJECT dis=NONE) header.from=example.com
+ARC-Seal: i=1; a=rsa-sha256; t=1792922644; cv=none; d=lists.example.org; s=arc1;
+	b=c2VhbDE=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=lists.example.org;
+	s=arc1; t=1792922644; h=from:to:subject:date; bh=Ym9keQ==; b=YW1zMQ==
+ARC-Authentication-Results: i=1; lists.example.org;
+	dkim=pass header.d=example.com header.s=s1 header.b=AbCd;
+	spf=pass smtp.mailfrom=alice@example.com;
+	dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=example.com
+DKIM-Signature: v=1; a=rsa-sha256; d=lists.example.org; s=list; h=from:to:subject; bh=Ym9keQ==; b=bGlzdA==
+From: Alice <alice@example.com>
+To: dev@lists.example.org
+Subject: [dev] Release notes
+List-Id: <dev.lists.example.org>

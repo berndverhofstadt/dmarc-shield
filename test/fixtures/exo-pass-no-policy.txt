@@ -1,0 +1,36 @@
+Received: from AM9PR01MB1234.eurprd01.prod.exchangelabs.com (2603:10a6:20b:1::10)
+ by AS8PR01MB5678.eurprd01.prod.exchangelabs.com with HTTPS; Sat, 25 Oct 2026
+ 09:00:02 +0000
+Received: from DU2PEPF00001234.eurprd01.prod.outlook.com (2603:10a6:10:1::1) by
+ AM9PR01MB1234.eurprd01.prod.exchangelabs.com (2603:10a6:20b:1::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8000.1; Sat, 25 Oct 2026
+ 09:00:01 +0000
+Authentication-Results: spf=pass (sender IP is 192.0.2.25)
+ smtp.mailfrom=mail.example.com; dkim=pass (signature was verified)
+ header.d=example.com;dmarc=pass action=none
+ header.from=example.com;compauth=pass reason=100
+Received-SPF: Pass (protection.outlook.com: domain of mail.example.com
+ designates 192.0.2.25 as permitted sender) receiver=protection.outlook.com;
+ client-ip=192.0.2.25; helo=mail.example.com; pr=C
+Received: from mail.example.com (192.0.2.25) by
+ DU2PEPF00001234.mail.protection.outlook.com (10.167.8.1) with Microsoft SMTP
+ Server (version=TLS1_3, cipher=TLS_AES_256_GCM_SHA384) id 15.20.8000.1 via
+ Frontend Transport; Sat, 25 Oct 2026 09:00:00 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=example.com; s=sel1;
+ h=from:to:subject:date:message-id; bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+ b=dGVzdHNpZ25hdHVyZQ==
+From: Example Billing <billing@example.com>
+To: Bernd <bernd@contoso.example>
+Subject: Your invoice
+Date: Sat, 25 Oct 2026 08:59:58 +0000
+Message-ID: <abc123@mail.example.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+X-MS-Exchange-Organization-ExpirationStartTime: 25 Oct 2026 09:00:01.1234
+ (UTC)
+X-MS-Exchange-Organization-Network-Message-Id: 0f1e2d3c-4b5a-6978-8796-a5b4c3d2e1f0
+X-MS-Exchange-Organization-AuthSource: DU2PEPF00001234.eurprd01.prod.outlook.com
+X-MS-Exchange-Organization-AuthAs: Anonymous
+X-MS-Exchange-Organization-SCL: 1
+X-MS-Exchange-Authentication-Results: spf=pass; dkim=pass; dmarc=pass
