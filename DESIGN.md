@@ -236,6 +236,12 @@ enforce").
   Outlook or Mac. With **`SupportsPinning`**, a pinned pane re-evaluates on
   every `ItemChanged`. The info bar therefore appears only on messages viewed
   while the pane is open or pinned.
+- **Automatic checks (roadmap):** `OnMessageReadWithCustomHeader` (preview,
+  classic Windows only, as of 2026-10) could start the add-in in the background
+  when a message carries `Authentication-Results` and set the info bar without
+  user action. Adopt it once it reaches a numbered requirement set and the
+  web/new Outlook/Mac clients. Until then, the pane shows a pinning tip (pinning
+  isn't available for Outlook.com).
 - **Mobile:** not offered. Outlook iOS/Android stop at Mailbox 1.5 and can't
   read internet headers. README explains this, and DESIGN tracks it so it can
   be revisited if Microsoft adds `getAllInternetHeadersAsync` to the mobile
