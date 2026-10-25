@@ -6,6 +6,16 @@ All notable changes are listed here. The format follows
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-10-25
+
+### Added
+
+- Custom DNS-over-HTTPS resolver URL in settings, for networks that block the
+  public resolvers.
+- Organisation resolver for admins: `npm run manifest:org -- --org-doh=<url>`
+  builds a manifest whose task pane only uses that resolver (public resolvers
+  and retry buttons are hidden).
+
 ## [1.1.1] - 2026-10-25
 
 ### Fixed

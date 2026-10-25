@@ -93,6 +93,13 @@
         and honestly shows blue. Mail providers that support BIMI themselves don't have this
         limitation; Microsoft doesn't support BIMI.
       </p>
+      <h3>"Couldn't reach Quad9": my company blocks DNS-over-HTTPS</h3>
+      <p>
+        Add-ins can't use your computer's DNS settings, because browsers don't offer that. Ask IT
+        for the organisation's DNS-over-HTTPS address and enter it under
+        <em>Settings → DNS resolver → Custom</em>. Administrators can also deploy a manifest that
+        sets it for everyone (see the README on GitHub).
+      </p>
       <h3>Does it work on my phone?</h3>
       <p>
         No. Outlook for iOS and Android don't allow add-ins to read message headers (Microsoft

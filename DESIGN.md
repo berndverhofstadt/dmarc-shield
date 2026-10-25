@@ -185,6 +185,14 @@ The effective policy (`p`, or `sp` for subdomains) comes from, in order:
    The verdict can't be green. The UI explains why and offers a link to
    enable the lookup in settings.
 
+**Resolvers.** Browsers expose no DNS API, so the device's own resolver can't
+be queried. Every lookup is DoH: a preset (Quad9, Cloudflare, Google), a custom
+URL in settings, or an organisation resolver from the deployed manifest
+(`taskpane.html?doh=<url>`, built with `npm run manifest:org`). An organisation
+resolver locks the choice: no public resolvers and no retry buttons. Failures
+are classified (network/timeout/http/dns). For a network or timeout failure,
+the user may retry once with another preset, but never automatically.
+
 Honesty rule: the UI states the policy *and where it came from* (header /
 DNS / ARC). It never claims a policy it hasn't seen.
 
