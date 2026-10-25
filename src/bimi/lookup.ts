@@ -9,7 +9,7 @@
  *     The URLs come from DNS, so they're the same for every recipient and
  *     carry no per-message information.
  */
-import { type ResolverId, queryTxt } from '../dns/lookup';
+import { type Resolver, type ResolverRef, queryTxt, resolverOf } from '../dns/lookup';
 import { orgDomainGuess } from '../parser/address';
 import type { Analysis } from '../parser/analyze';
 import { toASCII } from '../parser/punycode';
@@ -102,7 +102,7 @@ async function fetchText(
 
 async function findRecord(
   domain: string,
-  resolver: ResolverId,
+  resolver: Resolver,
   fetchFn: FetchFn | undefined,
 ): Promise<{ record: BimiRecord; at: string } | null> {
   // The From domain first, then its organisational domain (§4.4).
@@ -126,11 +126,12 @@ export function clearBimiCache(): void {
 
 export function lookupBimi(
   fromDomain: string,
-  resolver: ResolverId,
+  ref: ResolverRef,
   opts: BimiLookupOptions = {},
 ): Promise<BimiOutcome> {
+  const resolver = resolverOf(ref);
   const domain = toASCII(fromDomain);
-  const key = `${resolver}|${domain}`;
+  const key = `${resolver.url}|${domain}`;
   let p = cache.get(key);
   if (!p) {
     p = check(domain, resolver, opts);
@@ -142,7 +143,7 @@ export function lookupBimi(
 
 async function check(
   domain: string,
-  resolver: ResolverId,
+  resolver: Resolver,
   opts: BimiLookupOptions,
 ): Promise<BimiOutcome> {
   const fetchFn = opts.fetchFn ?? ((url, init) => fetch(url, init));

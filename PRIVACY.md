@@ -30,8 +30,10 @@ record:
 
 - **Sent:** only DNS names such as `_dmarc.example.com` (the sender's domain and,
   if needed, its parent domains). No content, addresses, subjects or identifiers.
-- **To:** the resolver you choose: Quad9 (default), Cloudflare or Google. The
-  resolver necessarily sees your IP address. See their policies:
+- **To:** the resolver you choose: Quad9 (default), Cloudflare or Google, a
+  custom DNS-over-HTTPS address you enter, or the resolver your organisation
+  configured (then only that one is used). The resolver necessarily sees your
+  IP address. See their policies:
   [Quad9](https://quad9.net/privacy/policy/),
   [Cloudflare](https://developers.cloudflare.com/1.1.1.1/privacy/public-dns-resolver/),
   [Google](https://developers.google.com/speed/public-dns/privacy).

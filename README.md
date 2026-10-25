@@ -96,6 +96,32 @@ Website: <https://berndverhofstadt.github.io/dmarc-shield/> ·
   offline heuristics (no brand list, no Public Suffix List) and can miss
   things. A verified sender proves origin, not that content is safe.
 
+## Enterprise networks: use your own DNS resolver
+
+Web add-ins can't use the device's DNS resolver: browsers have no API for DNS
+lookups, so the policy and BIMI lookups use DNS-over-HTTPS (RFC 8484). Many
+corporate networks block public DoH resolvers. Use your organisation's own
+DoH endpoint instead (for example Windows Server 2025 DNS, Cisco Umbrella,
+Zscaler, Infoblox, Cloudflare Gateway, NextDNS or AdGuard):
+
+- **Per user:** *Settings → DNS resolver → Custom* and enter the URL.
+- **For the whole organisation (admins):** build a manifest pinned to your
+  resolver and deploy it through the Microsoft 365 admin center:
+
+  ```sh
+  npm run manifest:org -- --org-doh=https://doh.corp.example/dns-query
+  # → manifest.org.xml (task pane URL gets ?doh=…)
+  ```
+
+  With an organisation resolver set, the pane uses **only** that resolver. The
+  public resolvers and retry buttons are hidden, and the settings show which
+  resolver IT configured.
+
+The endpoint must answer RFC 8484 `GET ?dns=` requests **and allow browser
+requests (CORS: `Access-Control-Allow-Origin: *` or
+`https://berndverhofstadt.github.io`)**. If yours doesn't, put a small reverse
+proxy in front that adds the header.
+
 ## Install
 
 - **Microsoft Marketplace:** search for *DMARC Shield* under *Apps / Get Add-ins*

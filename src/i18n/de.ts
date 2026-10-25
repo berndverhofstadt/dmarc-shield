@@ -156,6 +156,13 @@ export const de: Messages = {
   'settings.dnsHelp':
     'Wird nur verwendet, wenn die Header die Richtlinie nicht zeigen. Sendet nur den Domainnamen des Absenders an den unten gewählten Resolver: keine Inhalte, Adressen oder Kennungen. Der Resolver sieht Ihre IP-Adresse.',
   'settings.resolver': 'DNS-Resolver',
+  'settings.resolver.custom': 'Benutzerdefiniert (DNS-over-HTTPS-URL)',
+  'settings.customUrl': 'Resolver-URL',
+  'settings.customHelp':
+    'Der DNS-over-HTTPS-Endpunkt Ihrer Organisation (RFC 8484), zum Beispiel https://doh.example.com/dns-query. Er muss Anfragen aus Browsern zulassen (CORS).',
+  'settings.customInvalid': 'Geben Sie eine gültige https://-URL für den Resolver ein.',
+  'settings.orgResolver':
+    'Von Ihrer Organisation festgelegter DNS-Resolver: {host}. Domainnamen werden nur an diesen Resolver gesendet.',
   'settings.language': 'Sprache',
   'settings.language.auto': 'Wie Outlook',
   'settings.save': 'Speichern',

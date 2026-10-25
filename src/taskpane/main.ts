@@ -5,7 +5,17 @@
  */
 import { bimiEligibility } from '../bimi/eligibility';
 import { type BimiOutcome, bimiFromReceiver, lookupBimi } from '../bimi/lookup';
-import { DnsError, type ResolverId, RESOLVERS, lookupDmarcPolicy } from '../dns/lookup';
+import {
+  DnsError,
+  RESOLVERS,
+  type Resolver,
+  type ResolverId,
+  type ResolverRef,
+  customResolver,
+  lookupDmarcPolicy,
+  normalizeDohUrl,
+  resolverOf,
+} from '../dns/lookup';
 import { LOCALE_NAMES, type Locale, type MessageKey, resolveLocale, setLocale, t } from '../i18n';
 import { notify } from '../office/notify';
 import {
@@ -36,13 +46,13 @@ import { DEMOS, type DemoSample } from './demo';
 
 declare const __APP_VERSION__: string;
 
-type Lookup = (domain: string, resolver: ResolverId) => Promise<PolicyInfo | null>;
+type Lookup = (domain: string, resolver: Resolver) => Promise<PolicyInfo | null>;
 
 interface Env {
   store: SettingsStore;
   displayLanguage?: string;
   lookup: Lookup;
-  bimi: (domain: string, resolver: ResolverId) => Promise<BimiOutcome>;
+  bimi: (domain: string, resolver: Resolver) => Promise<BimiOutcome>;
   /** Office mode only: show the info bar for the current item. */
   notify?: (v: Verdict, a: Analysis) => void;
 }
@@ -59,8 +69,22 @@ let settings: Settings;
 let current: Current | null = null;
 /** Incremented on every evaluation so late async results for a previous item are dropped. */
 let generation = 0;
+/**
+ * Resolver set by IT through the deployed manifest (`taskpane.html?doh=…`).
+ * When present, it's the only resolver used: users can't pick a public one.
+ */
+let orgResolver: Resolver | null = null;
 /** Item the pane is currently showing (or evaluating); null when none is selected. */
 let shownKey: string | null | undefined;
+
+function activeResolver(): Resolver {
+  if (orgResolver) return orgResolver;
+  if (settings.resolver === 'custom') {
+    const url = normalizeDohUrl(settings.customResolver);
+    if (url) return customResolver(url);
+  }
+  return resolverOf(settings.resolver === 'custom' ? 'quad9' : settings.resolver);
+}
 
 // ---------------------------------------------------------------- rendering
 
@@ -170,7 +194,7 @@ function renderDns(state: DnsState): void {
   const box = $('dns');
   clear(box);
   box.hidden = state.kind === 'hidden';
-  const resolver = RESOLVERS[settings.resolver].name;
+  const resolver = activeResolver().name;
   switch (state.kind) {
     case 'offer': {
       const lookupBtn = h('button', { type: 'button', class: 'button' }, t('dns.button'));
@@ -206,7 +230,7 @@ function renderDns(state: DnsState): void {
 /** Human-readable text for a failed DoH request. */
 function dnsErrorText(e: unknown): string {
   if (e instanceof DnsError && e.resolver) {
-    const r = RESOLVERS[e.resolver];
+    const r = e.resolver;
     if (e.kind === 'network')
       return t('dns.failed.network', { resolver: r.name, host: new URL(r.url).host });
     if (e.kind === 'timeout') return t('dns.failed.timeout', { resolver: r.name });
@@ -216,9 +240,11 @@ function dnsErrorText(e: unknown): string {
 
 /** Other resolvers worth offering after a connection failure (the user picks; no silent fallback). */
 function otherResolvers(e: unknown): ResolverId[] {
+  if (orgResolver) return [];
   if (!(e instanceof DnsError) || (e.kind !== 'network' && e.kind !== 'timeout') || !e.resolver)
     return [];
-  return (Object.keys(RESOLVERS) as ResolverId[]).filter((id) => id !== e.resolver);
+  const failed = e.resolver.id;
+  return (Object.keys(RESOLVERS) as ResolverId[]).filter((id) => id !== failed);
 }
 
 function retryButtons(resolvers: ResolverId[], run: (r: ResolverId) => void): HTMLElement {
@@ -261,6 +287,12 @@ function renderSettingsForm(): void {
   $<HTMLInputElement>('set-infobar').checked = settings.showInfoBar;
   $<HTMLInputElement>('set-dns').checked = settings.dnsLookup;
   $<HTMLInputElement>('set-bimi').checked = settings.bimiLookup;
+  $('resolver-field').hidden = orgResolver !== null;
+  const org = $('org-resolver');
+  org.hidden = orgResolver === null;
+  org.textContent = orgResolver ? t('settings.orgResolver', { host: orgResolver.name }) : '';
+  $<HTMLInputElement>('set-custom-resolver').value = settings.customResolver;
+  $('custom-resolver-field').hidden = orgResolver !== null || settings.resolver !== 'custom';
   const resolver = $<HTMLSelectElement>('set-resolver');
   resolver.replaceChildren(
     ...Object.entries(RESOLVERS).map(([id, r]) =>
@@ -269,6 +301,11 @@ function renderSettingsForm(): void {
         { value: id, selected: id === settings.resolver },
         `${r.name} (${new URL(r.url).host})`,
       ),
+    ),
+    h(
+      'option',
+      { value: 'custom', selected: settings.resolver === 'custom' },
+      t('settings.resolver.custom'),
     ),
   );
   const lang = $<HTMLSelectElement>('set-language');
@@ -337,12 +374,12 @@ function present(): void {
 
 // ---------------------------------------------------------------- flow
 
-async function runLookup(gen: number, resolver: ResolverId = settings.resolver): Promise<void> {
+async function runLookup(gen: number, ref: ResolverRef = activeResolver()): Promise<void> {
   if (!current?.v.needsPolicy || !current.v.policyDomain) return;
   const domain = current.v.policyDomain;
   renderDns({ kind: 'checking', domain });
   try {
-    const policy = await env.lookup(domain, resolver);
+    const policy = await env.lookup(domain, resolverOf(ref));
     if (gen !== generation || !current) return;
     if (policy) {
       current.v = decide(current.a, policy);
@@ -371,8 +408,9 @@ function bimiDomain(c: Current): string | undefined {
 async function updateBimi(
   gen: number,
   requested: boolean,
-  resolver: ResolverId = settings.resolver,
+  ref: ResolverRef = activeResolver(),
 ): Promise<void> {
+  const resolver = resolverOf(ref);
   if (!current) return;
   const domain = bimiDomain(current);
   const receiver = domain ? bimiFromReceiver(current.a, domain) : null;
@@ -473,6 +511,9 @@ function watchItem(): void {
 }
 
 function wireSettings(onChange: (before: Settings) => void): void {
+  $<HTMLSelectElement>('set-resolver').addEventListener('change', (ev) => {
+    $('custom-resolver-field').hidden = (ev.target as HTMLSelectElement).value !== 'custom';
+  });
   $<HTMLFormElement>('settings-form').addEventListener('submit', (ev) => {
     ev.preventDefault();
     const before = settings;
@@ -480,10 +521,16 @@ function wireSettings(onChange: (before: Settings) => void): void {
       showInfoBar: $<HTMLInputElement>('set-infobar').checked,
       dnsLookup: $<HTMLInputElement>('set-dns').checked,
       bimiLookup: $<HTMLInputElement>('set-bimi').checked,
-      resolver: $<HTMLSelectElement>('set-resolver').value as ResolverId,
+      resolver: $<HTMLSelectElement>('set-resolver').value as Settings['resolver'],
+      customResolver: normalizeDohUrl($<HTMLInputElement>('set-custom-resolver').value) ?? '',
       language: $<HTMLSelectElement>('set-language').value as Settings['language'],
     };
     const status = $('settings-status');
+    if (next.resolver === 'custom' && !next.customResolver && !orgResolver) {
+      status.textContent = t('settings.customInvalid');
+      $('set-custom-resolver').focus();
+      return;
+    }
     env.store
       .save(next)
       .then(() => {
@@ -532,7 +579,14 @@ function rerender(before: Settings): void {
 
 // ---------------------------------------------------------------- entry points
 
+/** IT can pin the organisation's DoH resolver by adding `?doh=<url>` to the manifest's task pane URL. */
+function readOrgResolver(): void {
+  const url = normalizeDohUrl(new URLSearchParams(location.search).get('doh'));
+  orgResolver = url ? customResolver(url, 'org') : null;
+}
+
 function startOffice(): void {
+  readOrgResolver();
   init({
     store: roamingStore(Office.context.roamingSettings),
     displayLanguage: Office.context.displayLanguage,
@@ -561,8 +615,9 @@ function startDemo(
   banner: boolean,
   dnsFail: boolean,
 ): void {
+  readOrgResolver();
   // `dnsfail=1` simulates a blocked resolver, to test the error UI.
-  const fail = (r: ResolverId) => Promise.reject(new DnsError('Failed to fetch', 'network', r));
+  const fail = (r: Resolver) => Promise.reject(new DnsError('Failed to fetch', 'network', r));
   init({
     // Demo lookups are fake (no network), so BIMI can be on by default here.
     store: memoryStore({ bimiLookup: true, ...(lang ? { language: lang as Locale } : {}) }),

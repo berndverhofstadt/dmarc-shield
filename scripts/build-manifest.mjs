@@ -4,6 +4,9 @@
  *
  *   node scripts/build-manifest.mjs            → dist/manifest.xml (production URL)
  *   node scripts/build-manifest.mjs --dev      → manifest.dev.xml  (https://localhost:3000/)
+ *   node scripts/build-manifest.mjs --org-doh=https://doh.corp.example/dns-query
+ *                                              → manifest.org.xml (production, pinned to the
+ *                                                organisation's DoH resolver; for admin deployment)
  *
  * The production base URL defaults to GitHub Pages and can be overridden with
  * ADDIN_BASE_URL (e.g. for Azure Static Web Apps). It must be https and end with "/".
@@ -15,6 +18,32 @@ import { fileURLToPath } from 'node:url';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const pkg = JSON.parse(readFileSync(resolve(root, 'package.json'), 'utf8'));
 const dev = process.argv.includes('--dev');
+const orgDoh = process.argv.find((a) => a.startsWith('--org-doh='))?.slice('--org-doh='.length);
+
+let taskpaneQuery = '';
+if (orgDoh !== undefined) {
+  let u;
+  try {
+    u = new URL(orgDoh);
+  } catch {
+    u = null;
+  }
+  if (
+    !u ||
+    u.protocol !== 'https:' ||
+    u.username ||
+    u.password ||
+    u.hash ||
+    u.searchParams.has('dns')
+  ) {
+    console.error(
+      `--org-doh must be an https DoH URL without credentials, fragment or "dns" parameter: ${orgDoh}`,
+    );
+    process.exit(1);
+  }
+  // XML-escaped, URL-encoded query; the task pane reads it as `?doh=`.
+  taskpaneQuery = `?doh=${encodeURIComponent(u.href)}`.replaceAll('&', '&amp;');
+}
 
 // Separate IDs so a dev sideload never collides with an installed release.
 const ID = dev ? '5a06a6cf-4fbe-46fd-ae61-c573e9c11513' : '4fd5f78f-a5a3-4fb8-a41d-420cd2b4e01f';
@@ -37,9 +66,14 @@ const xml = readFileSync(resolve(root, 'manifest/manifest.template.xml'), 'utf8'
   .replaceAll('{{BASE_URL}}', baseUrl)
   .replaceAll('{{ID}}', ID)
   .replaceAll('{{VERSION}}', version)
-  .replaceAll('{{NAME_SUFFIX}}', dev ? ' (dev)' : '');
+  .replaceAll('{{NAME_SUFFIX}}', dev ? ' (dev)' : '')
+  .replaceAll('{{TASKPANE_QUERY}}', taskpaneQuery);
 
-const out = dev ? resolve(root, 'manifest.dev.xml') : resolve(root, 'dist/manifest.xml');
+const out = dev
+  ? resolve(root, 'manifest.dev.xml')
+  : orgDoh !== undefined
+    ? resolve(root, 'manifest.org.xml')
+    : resolve(root, 'dist/manifest.xml');
 mkdirSync(dirname(out), { recursive: true });
 writeFileSync(out, xml);
 console.log(`Wrote ${out} (${baseUrl}, v${version})`);

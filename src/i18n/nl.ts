@@ -152,6 +152,13 @@ export const nl: Messages = {
   'settings.dnsHelp':
     'Alleen gebruikt als de headers het beleid niet tonen. Verstuurt alleen de domeinnaam van de afzender naar de resolver hieronder: geen berichtinhoud, adressen of identificatoren. De resolver ziet wel uw IP-adres.',
   'settings.resolver': 'DNS-resolver',
+  'settings.resolver.custom': 'Aangepast (DNS-over-HTTPS-URL)',
+  'settings.customUrl': 'Resolver-URL',
+  'settings.customHelp':
+    'Het DNS-over-HTTPS-adres van uw organisatie (RFC 8484), bijvoorbeeld https://doh.example.com/dns-query. Het moet verzoeken vanuit browsers toestaan (CORS).',
+  'settings.customInvalid': 'Voer een geldige https://-URL in voor de resolver.',
+  'settings.orgResolver':
+    'DNS-resolver ingesteld door uw organisatie: {host}. Domeinnamen worden alleen naar deze resolver gestuurd.',
   'settings.language': 'Taal',
   'settings.language.auto': 'Zelfde als Outlook',
   'settings.save': 'Opslaan',

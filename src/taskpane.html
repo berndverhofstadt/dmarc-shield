@@ -96,10 +96,24 @@
             <span data-i18n="settings.dns"></span>
           </label>
           <p id="dns-help" class="help" data-i18n="settings.dnsHelp"></p>
-          <div class="field">
+          <div class="field" id="resolver-field">
             <label for="set-resolver" data-i18n="settings.resolver"></label>
             <select id="set-resolver"></select>
           </div>
+          <div class="field" id="custom-resolver-field" hidden>
+            <label for="set-custom-resolver" data-i18n="settings.customUrl"></label>
+            <input
+              type="url"
+              id="set-custom-resolver"
+              inputmode="url"
+              spellcheck="false"
+              autocomplete="off"
+              placeholder="https://doh.example.com/dns-query"
+              aria-describedby="custom-help"
+            />
+            <p id="custom-help" class="help" data-i18n="settings.customHelp"></p>
+          </div>
+          <p id="org-resolver" class="help" hidden></p>
           <label class="check">
             <input type="checkbox" id="set-bimi" aria-describedby="bimi-help" />
             <span data-i18n="settings.bimi"></span>

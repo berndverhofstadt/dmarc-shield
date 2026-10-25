@@ -453,6 +453,7 @@ form {
 }
 
 select,
+input[type='url'],
 .button {
   font: inherit;
   min-height: 36px;

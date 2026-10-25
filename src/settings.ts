@@ -2,7 +2,7 @@
  * User settings, stored in Office roaming settings: the user's own mailbox,
  * never sent anywhere else.
  */
-import { type ResolverId, isResolverId } from './dns/lookup';
+import { type ResolverId, isResolverId, normalizeDohUrl } from './dns/lookup';
 import { type Locale, isLocale } from './i18n';
 
 export interface Settings {
@@ -10,7 +10,10 @@ export interface Settings {
   dnsLookup: boolean;
   /** Opt-in BIMI check: DNS + downloading logo/certificate from the sender's logo host. */
   bimiLookup: boolean;
-  resolver: ResolverId;
+  /** A preset, or 'custom' to use `customResolver`. */
+  resolver: ResolverId | 'custom';
+  /** Custom DoH endpoint (RFC 8484), e.g. the organisation's resolver. */
+  customResolver: string;
   language: 'auto' | Locale;
 }
 
@@ -19,6 +22,7 @@ export const DEFAULT_SETTINGS: Readonly<Settings> = {
   dnsLookup: false,
   bimiLookup: false,
   resolver: 'quad9',
+  customResolver: '',
   language: 'auto',
 };
 
@@ -32,7 +36,10 @@ export function parseSettings(raw: unknown): Settings {
   if (typeof r.showInfoBar === 'boolean') s.showInfoBar = r.showInfoBar;
   if (typeof r.dnsLookup === 'boolean') s.dnsLookup = r.dnsLookup;
   if (typeof r.bimiLookup === 'boolean') s.bimiLookup = r.bimiLookup;
+  const custom = typeof r.customResolver === 'string' ? normalizeDohUrl(r.customResolver) : null;
+  if (custom) s.customResolver = custom;
   if (isResolverId(r.resolver)) s.resolver = r.resolver;
+  else if (r.resolver === 'custom' && custom) s.resolver = 'custom';
   if (r.language === 'auto' || isLocale(r.language)) s.language = r.language;
   return s;
 }

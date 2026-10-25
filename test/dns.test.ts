@@ -3,9 +3,12 @@ import {
   DnsError,
   RESOLVERS,
   clearDnsCache,
+  customResolver,
   isResolverId,
   lookupDmarcPolicy,
+  normalizeDohUrl,
   queryTxt,
+  resolverOf,
   treeWalk,
 } from '../src/dns/lookup';
 import {
@@ -188,6 +191,49 @@ describe('DMARC lookup', () => {
     );
   });
 
+  it('validates custom DoH endpoint URLs', () => {
+    expect(normalizeDohUrl('https://doh.corp.example/dns-query')).toBe(
+      'https://doh.corp.example/dns-query',
+    );
+    expect(normalizeDohUrl('  https://dns.nextdns.io/abc123  ')).toBe(
+      'https://dns.nextdns.io/abc123',
+    );
+    expect(normalizeDohUrl('https://doh.corp.example/q?tenant=1')).toBe(
+      'https://doh.corp.example/q?tenant=1',
+    );
+    expect(normalizeDohUrl('http://doh.corp.example/dns-query')).toBeNull();
+    expect(normalizeDohUrl('https://user:pw@doh.corp.example/dns-query')).toBeNull();
+    expect(normalizeDohUrl('https://doh.corp.example/dns-query#x')).toBeNull();
+    expect(normalizeDohUrl('https://doh.corp.example/dns-query?dns=abc')).toBeNull();
+    expect(normalizeDohUrl('not a url')).toBeNull();
+    expect(normalizeDohUrl('')).toBeNull();
+    expect(normalizeDohUrl(null)).toBeNull();
+  });
+
+  it('queries custom and organisation resolvers', async () => {
+    const fetchFn = vi.fn(async (url: string, _init?: RequestInit) => {
+      void _init;
+      const u = new URL(url);
+      const name = '_dmarc.example.com';
+      expect(u.searchParams.get('dns')).toBe(toBase64Url(encodeQuery(name)));
+      return new Response(response(name, [['v=DMARC1; p=reject']]).buffer as ArrayBuffer);
+    });
+    const org = customResolver('https://doh.corp.example/q?tenant=7', 'org');
+    expect(org).toEqual({
+      id: 'org',
+      name: 'doh.corp.example',
+      url: 'https://doh.corp.example/q?tenant=7',
+    });
+    const r = await lookupDmarcPolicy('example.com', org, { fetchFn });
+    expect(r.policy).toMatchObject({ p: 'reject', resolver: 'doh.corp.example' });
+    expect(fetchFn.mock.calls[0]![0]).toMatch(/^https:\/\/doh\.corp\.example\/q\?tenant=7&dns=/);
+    expect(resolverOf('quad9')).toEqual({
+      id: 'quad9',
+      name: 'Quad9',
+      url: 'https://dns.quad9.net/dns-query',
+    });
+  });
+
   it('classifies failures so the UI can explain them', async () => {
     const blocked = vi.fn(async () => {
       throw new TypeError('Failed to fetch');
@@ -196,7 +242,7 @@ describe('DMARC lookup', () => {
       queryTxt('_dmarc.example.com', 'quad9', { fetchFn: blocked }),
     ).rejects.toMatchObject({
       kind: 'network',
-      resolver: 'quad9',
+      resolver: { id: 'quad9', name: 'Quad9' },
     });
     const slow = vi.fn(
       (_url: string, init: RequestInit) =>
@@ -210,7 +256,7 @@ describe('DMARC lookup', () => {
       queryTxt('_dmarc.example.com', 'google', { fetchFn: slow, timeoutMs: 5 }),
     ).rejects.toMatchObject({
       kind: 'timeout',
-      resolver: 'google',
+      resolver: { id: 'google' },
       message: 'timed out',
     });
     const http = fetchFrom({ '_dmarc.example.com': { status: 502 } });

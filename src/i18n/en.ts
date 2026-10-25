@@ -148,6 +148,13 @@ export const en = {
   'settings.dnsHelp':
     "Only used when the headers don't show the policy. Sends only the sender's domain name to the resolver below: no message content, addresses or identifiers. Your IP address is visible to the resolver.",
   'settings.resolver': 'DNS resolver',
+  'settings.resolver.custom': 'Custom (DNS-over-HTTPS URL)',
+  'settings.customUrl': 'Resolver URL',
+  'settings.customHelp':
+    "Your organisation's DNS-over-HTTPS endpoint (RFC 8484), for example https://doh.example.com/dns-query. It must allow requests from browsers (CORS).",
+  'settings.customInvalid': 'Enter a valid https:// URL for the resolver.',
+  'settings.orgResolver':
+    'DNS resolver set by your organisation: {host}. Domain names are only sent to this resolver.',
   'settings.language': 'Language',
   'settings.language.auto': 'Same as Outlook',
   'settings.save': 'Save',

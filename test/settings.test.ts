@@ -11,6 +11,7 @@ describe('settings', () => {
         dnsLookup: true,
         bimiLookup: true,
         resolver: 'google',
+        customResolver: 'https://doh.corp.example/dns-query',
         language: 'fr',
         extra: 1,
       }),
@@ -19,7 +20,21 @@ describe('settings', () => {
       dnsLookup: true,
       bimiLookup: true,
       resolver: 'google',
+      customResolver: 'https://doh.corp.example/dns-query',
       language: 'fr',
+    });
+    // 'custom' is only accepted with a valid https URL.
+    expect(
+      parseSettings({ resolver: 'custom', customResolver: 'https://doh.corp.example/q' }),
+    ).toMatchObject({
+      resolver: 'custom',
+      customResolver: 'https://doh.corp.example/q',
+    });
+    expect(
+      parseSettings({ resolver: 'custom', customResolver: 'http://insecure.example' }),
+    ).toMatchObject({
+      resolver: 'quad9',
+      customResolver: '',
     });
     expect(
       parseSettings({ showInfoBar: 'yes', dnsLookup: 1, resolver: 'evil', language: 'xx' }),

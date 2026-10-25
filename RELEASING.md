@@ -83,6 +83,19 @@ apps → App type: Office Add-in*, then either:
   (recommended: Microsoft 365 usually picks up manifest updates without a re-upload), or
 - **Upload** `manifest.xml` from the release (re-upload after manifest changes).
 
+**Organisations that block public DNS-over-HTTPS:** build a manifest pinned
+to your own DoH endpoint and upload that file instead:
+
+```sh
+npm ci
+npm run manifest:org -- --org-doh=https://doh.corp.example/dns-query
+```
+
+This writes `manifest.org.xml`, the production manifest with
+`taskpane.html?doh=<url>`. It has the same add-in ID, so don't deploy it next to
+the Marketplace version. The endpoint must support RFC 8484 GET and send CORS
+headers (see README).
+
 Assign it to users or groups, and choose *Fixed* (can't be removed) or
 *Available*. Rollout can take up to 24 hours (sometimes 72). This also works
 for Exchange Online mailboxes in new Outlook, Mac and web. Code updates (task

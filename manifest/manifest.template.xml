@@ -2,7 +2,8 @@
 <!--
   DMARC Shield — add-in only (XML) manifest.
   Generated from manifest/manifest.template.xml by scripts/build-manifest.mjs;
-  {{ID}}, {{BASE_URL}}, {{VERSION}} and {{NAME_SUFFIX}} are substituted at build time. Don't edit the output.
+  {{ID}}, {{BASE_URL}}, {{VERSION}}, {{NAME_SUFFIX}} and {{TASKPANE_QUERY}} are substituted
+  at build time. Don't edit the output.
 -->
 <OfficeApp xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -33,7 +34,7 @@
   <FormSettings>
     <Form xsi:type="ItemRead">
       <DesktopSettings>
-        <SourceLocation DefaultValue="{{BASE_URL}}taskpane.html"/>
+        <SourceLocation DefaultValue="{{BASE_URL}}taskpane.html{{TASKPANE_QUERY}}"/>
         <RequestedHeight>350</RequestedHeight>
       </DesktopSettings>
     </Form>
@@ -87,7 +88,7 @@
       </bt:Images>
       <bt:Urls>
         <bt:Url id="Commands.Url" DefaultValue="{{BASE_URL}}commands.html"/>
-        <bt:Url id="Taskpane.Url" DefaultValue="{{BASE_URL}}taskpane.html"/>
+        <bt:Url id="Taskpane.Url" DefaultValue="{{BASE_URL}}taskpane.html{{TASKPANE_QUERY}}"/>
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="GroupLabel" DefaultValue="DMARC Shield">
@@ -154,7 +155,7 @@
         </bt:Images>
         <bt:Urls>
           <bt:Url id="Commands.Url" DefaultValue="{{BASE_URL}}commands.html"/>
-          <bt:Url id="Taskpane.Url" DefaultValue="{{BASE_URL}}taskpane.html"/>
+          <bt:Url id="Taskpane.Url" DefaultValue="{{BASE_URL}}taskpane.html{{TASKPANE_QUERY}}"/>
         </bt:Urls>
         <bt:ShortStrings>
           <bt:String id="GroupLabel" DefaultValue="DMARC Shield">

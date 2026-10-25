@@ -31,6 +31,7 @@ Only the latest release, as served from
 | Fake or stolen-name mark certificate | The chain must verify (WebCrypto signatures) up to one of three bundled roots (DigiCert Verified Mark Root CA, SSL.com VMC RSA Root CA 2024, GlobalSign Verified Mark Root R42; fingerprints in `src/bimi/roots.ts`). Roots inside the downloaded PEM are never trusted. Also checked: the BIMI EKU, CA flags, validity dates, the SAN domain. Not checked: revocation (OCSP/CRL) and CT SCTs. |
 | Logo shown on spoofed mail | BIMI is only evaluated when DMARC passed under `p=reject` or `p=quarantine` with pct=100 (draft-brand-indicators §7.1). |
 | Malicious SVG logo | Logos are rendered only as `<img src="data:image/svg+xml;base64,…">`. SVG in an image context runs no scripts and loads no external resources. Downloads are capped (certificate 256 KB, logo 64 KB) and time out. |
+| Changing the resolver via the URL | The organisation resolver (`taskpane.html?doh=`) comes from the manifest that the admin or user deployed. Outlook loads the pane only from the manifest's `SourceLocation`, so a sender can't change it. The value must be an https URL without credentials or fragment. |
 | Malicious DNS answers | DoH responses are parsed defensively (bounds-checked, compression-loop-safe). Only the policy fields are used, so a spoofed record can at most change the colour between green and blue, never hide a forgery finding. The resolver is trusted; DNSSEC isn't validated client-side. |
 
 ### Trust assumption
