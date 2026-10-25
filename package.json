@@ -31,7 +31,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@resvg/resvg-js": "^2.6.2",
-    "@types/node": "^20.19.43",
+    "@types/node": "^26.6.5",
     "@types/office-js": "^1.0.614",
     "@vitest/coverage-v8": "^5.0.5",
     "ajv": "^8.20.0",
@@ -41,7 +41,7 @@
     "office-addin-dev-certs": "^3.0.1",
     "office-addin-manifest": "^3.0.1",
     "prettier": "^3.9.10",
-    "typescript": "~5.9",
+    "typescript": "~7.0",
     "typescript-eslint": "^8.72.0",
     "vite": "^8.3.5",
     "vitest": "^5.0.5"
