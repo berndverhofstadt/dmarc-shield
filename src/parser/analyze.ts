@@ -186,7 +186,8 @@ export function analyze(input: string | readonly Header[], ctx: AnalysisContext 
       const domain =
         d.props['header.d'] ?? (d.props['header.i'] ? domainOf(d.props['header.i']) : '');
       const entry: Analysis['dkim'][number] = { result: d.result };
-      if (domain) entry.domain = domain.toLowerCase();
+      // Exchange Online writes `header.d=none` for unsigned mail.
+      if (domain && domain.toLowerCase() !== 'none') entry.domain = domain.toLowerCase();
       if (d.props['header.s']) entry.selector = d.props['header.s'];
       a.dkim.push(entry);
     }
@@ -263,7 +264,8 @@ export function analyze(input: string | readonly Header[], ctx: AnalysisContext 
       }
     }
 
-    const passing = a.dkim.filter((d) => d.result === 'pass' && d.domain);
+    // Forwarders re-sign, so for ARC-verified mail a foreign signature is expected.
+    const passing = a.arcRescue ? [] : a.dkim.filter((d) => d.result === 'pass' && d.domain);
     if (
       passing.length > 0 &&
       !passing.some((d) => relaxedAligned(d.domain as string, from.domain))

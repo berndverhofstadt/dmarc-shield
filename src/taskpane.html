@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--
+      Strict CSP. The only external script is Office.js (Microsoft CDN, required by
+      Store policy 1120.1). connect-src only allows the three opt-in DoH resolvers;
+      the code contacts them only after the user asks for a DNS lookup.
+      Keep in sync with staticwebapp.config.json and SECURITY.md.
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self' https://appsforoffice.microsoft.com; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src https://dns.quad9.net https://cloudflare-dns.com https://dns.google; frame-src 'none'; worker-src 'none'; manifest-src 'none'; media-src 'none'; object-src 'none'; form-action 'none'; base-uri 'none'; upgrade-insecure-requests"
+    />
+    <meta name="referrer" content="no-referrer" />
+    <meta name="color-scheme" content="light dark" />
+    <title>DMARC Shield</title>
+    <link rel="icon" type="image/png" href="./assets/icon-32.png" />
+    <link rel="stylesheet" href="./ui/taskpane.css" />
+    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+    <script type="module" src="./taskpane/main.ts"></script>
+  </head>
+  <body>
+    <main id="app" aria-labelledby="verdict-title">
+      <p id="demo-banner" class="demo-banner" hidden data-i18n="app.demo"></p>
+
+      <section
+        id="verdict"
+        class="verdict"
+        data-tone="grey"
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        <div id="shield" class="shield"></div>
+        <div class="verdict-text">
+          <h1 id="verdict-title">DMARC Shield</h1>
+          <p id="verdict-summary"></p>
+          <p id="verdict-via" class="via" hidden></p>
+        </div>
+      </section>
+
+      <section id="dns" class="dns" hidden aria-live="polite"></section>
+
+      <section id="findings" class="findings" aria-labelledby="findings-heading" hidden>
+        <h2 id="findings-heading" class="visually-hidden" data-i18n="findings.heading"></h2>
+        <ul id="findings-list"></ul>
+      </section>
+
+      <section id="details" class="details" aria-labelledby="details-heading" hidden>
+        <h2 id="details-heading" data-i18n="details.heading"></h2>
+        <dl id="details-list"></dl>
+      </section>
+
+      <details id="raw" class="panel" hidden>
+        <summary data-i18n="raw.heading"></summary>
+        <div id="raw-body"></div>
+      </details>
+
+      <details id="help" class="panel">
+        <summary data-i18n="help.heading"></summary>
+        <div id="help-body"></div>
+      </details>
+
+      <details id="settings" class="panel">
+        <summary data-i18n="settings.heading"></summary>
+        <form id="settings-form" novalidate>
+          <label class="check">
+            <input type="checkbox" id="set-infobar" />
+            <span data-i18n="settings.infobar"></span>
+          </label>
+          <label class="check">
+            <input type="checkbox" id="set-dns" aria-describedby="dns-help" />
+            <span data-i18n="settings.dns"></span>
+          </label>
+          <p id="dns-help" class="help" data-i18n="settings.dnsHelp"></p>
+          <div class="field">
+            <label for="set-resolver" data-i18n="settings.resolver"></label>
+            <select id="set-resolver"></select>
+          </div>
+          <div class="field">
+            <label for="set-language" data-i18n="settings.language"></label>
+            <select id="set-language"></select>
+          </div>
+          <button type="submit" class="button" data-i18n="settings.save"></button>
+          <p id="settings-status" class="help" role="status"></p>
+          <p class="help" data-i18n="settings.storage"></p>
+        </form>
+      </details>
+
+      <footer class="footer">
+        <a
+          href="./privacy.html"
+          target="_blank"
+          rel="noopener noreferrer"
+          data-i18n="footer.privacy"
+        ></a>
+        <a
+          href="./index.html"
+          target="_blank"
+          rel="noopener noreferrer"
+          data-i18n="footer.about"
+        ></a>
+        <span id="version"></span>
+      </footer>
+    </main>
+  </body>
+</html>

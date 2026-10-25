@@ -1,6 +1,6 @@
 {
   "name": "dmarc-shield",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "description": "Outlook add-in that shows DMARC, SPF and DKIM authentication status, entirely client-side.",
   "license": "MIT",
@@ -14,6 +14,13 @@
     "node": ">=20.19"
   },
   "scripts": {
+    "dev": "node scripts/build-manifest.mjs --dev && vite",
+    "start": "node scripts/build-manifest.mjs --dev && office-addin-debugging start manifest.dev.xml desktop --dev-server \"vite\" --dev-server-port 3000",
+    "stop": "office-addin-debugging stop manifest.dev.xml",
+    "build": "tsc --noEmit && vite build && node scripts/build-manifest.mjs",
+    "preview": "vite preview",
+    "icons": "node scripts/build-icons.mjs",
+    "validate": "node scripts/build-manifest.mjs && office-addin-manifest validate dist/manifest.xml",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
@@ -23,11 +30,16 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@resvg/resvg-js": "^2.6.2",
     "@types/node": "^20.19.43",
     "@types/office-js": "^1.0.614",
     "@vitest/coverage-v8": "^5.0.5",
+    "ajv": "^8.20.0",
     "eslint": "^10.13.0",
     "globals": "^17.13.0",
+    "office-addin-debugging": "^7.0.1",
+    "office-addin-dev-certs": "^3.0.1",
+    "office-addin-manifest": "^3.0.1",
     "prettier": "^3.9.10",
     "typescript": "~5.9",
     "typescript-eslint": "^8.72.0",

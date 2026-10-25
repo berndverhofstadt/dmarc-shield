@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  DMARC Shield — add-in only (XML) manifest.
+  Generated from manifest/manifest.template.xml by scripts/build-manifest.mjs;
+  {{ID}}, {{BASE_URL}}, {{VERSION}} and {{NAME_SUFFIX}} are substituted at build time. Don't edit the output.
+-->
+<OfficeApp xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
+           xmlns:mailappor="http://schemas.microsoft.com/office/mailappversionoverrides/1.0"
+           xsi:type="MailApp">
+  <Id>{{ID}}</Id>
+  <Version>{{VERSION}}</Version>
+  <ProviderName>Bernd Verhofstadt</ProviderName>
+  <DefaultLocale>en-US</DefaultLocale>
+  <DisplayName DefaultValue="DMARC Shield{{NAME_SUFFIX}}"/>
+  <Description DefaultValue="See at a glance whether a message really comes from the domain it claims: DMARC, SPF, DKIM and ARC results from your mail server, checked entirely in Outlook.">
+    <Override Locale="nl-NL" Value="Zie in één oogopslag of een bericht echt van het opgegeven domein komt: DMARC-, SPF-, DKIM- en ARC-resultaten van uw mailserver, volledig in Outlook gecontroleerd."/>
+    <Override Locale="fr-FR" Value="Vérifiez d'un coup d'œil si un message provient vraiment du domaine annoncé : résultats DMARC, SPF, DKIM et ARC de votre serveur, analysés entièrement dans Outlook."/>
+    <Override Locale="de-DE" Value="Sehen Sie auf einen Blick, ob eine Nachricht wirklich von der angegebenen Domain stammt: DMARC-, SPF-, DKIM- und ARC-Ergebnisse Ihres Mailservers, vollständig in Outlook geprüft."/>
+  </Description>
+  <IconUrl DefaultValue="{{BASE_URL}}assets/icon-64.png"/>
+  <HighResolutionIconUrl DefaultValue="{{BASE_URL}}assets/icon-128.png"/>
+  <SupportUrl DefaultValue="{{BASE_URL}}support.html"/>
+  <Hosts>
+    <Host Name="Mailbox"/>
+  </Hosts>
+  <Requirements>
+    <Sets>
+      <Set Name="Mailbox" MinVersion="1.8"/>
+    </Sets>
+  </Requirements>
+  <FormSettings>
+    <Form xsi:type="ItemRead">
+      <DesktopSettings>
+        <SourceLocation DefaultValue="{{BASE_URL}}taskpane.html"/>
+        <RequestedHeight>350</RequestedHeight>
+      </DesktopSettings>
+    </Form>
+  </FormSettings>
+  <Permissions>ReadItem</Permissions>
+  <Rule xsi:type="RuleCollection" Mode="Or">
+    <Rule xsi:type="ItemIs" ItemType="Message" FormType="Read"/>
+  </Rule>
+  <DisableEntityHighlighting>false</DisableEntityHighlighting>
+
+  <VersionOverrides xmlns="http://schemas.microsoft.com/office/mailappversionoverrides" xsi:type="VersionOverridesV1_0">
+    <Requirements>
+      <bt:Sets DefaultMinVersion="1.8">
+        <bt:Set Name="Mailbox"/>
+      </bt:Sets>
+    </Requirements>
+    <Hosts>
+      <Host xsi:type="MailHost">
+        <DesktopFormFactor>
+          <FunctionFile resid="Commands.Url"/>
+          <ExtensionPoint xsi:type="MessageReadCommandSurface">
+            <OfficeTab id="TabDefault">
+              <Group id="msgReadGroup">
+                <Label resid="GroupLabel"/>
+                <Control xsi:type="Button" id="msgReadOpenPaneButton">
+                  <Label resid="TaskpaneButton.Label"/>
+                  <Supertip>
+                    <Title resid="TaskpaneButton.Label"/>
+                    <Description resid="TaskpaneButton.Tooltip"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon.16x16"/>
+                    <bt:Image size="32" resid="Icon.32x32"/>
+                    <bt:Image size="80" resid="Icon.80x80"/>
+                  </Icon>
+                  <Action xsi:type="ShowTaskpane">
+                    <SourceLocation resid="Taskpane.Url"/>
+                  </Action>
+                </Control>
+              </Group>
+            </OfficeTab>
+          </ExtensionPoint>
+        </DesktopFormFactor>
+      </Host>
+    </Hosts>
+    <Resources>
+      <bt:Images>
+        <bt:Image id="Icon.16x16" DefaultValue="{{BASE_URL}}assets/icon-16.png"/>
+        <bt:Image id="Icon.32x32" DefaultValue="{{BASE_URL}}assets/icon-32.png"/>
+        <bt:Image id="Icon.80x80" DefaultValue="{{BASE_URL}}assets/icon-80.png"/>
+      </bt:Images>
+      <bt:Urls>
+        <bt:Url id="Commands.Url" DefaultValue="{{BASE_URL}}commands.html"/>
+        <bt:Url id="Taskpane.Url" DefaultValue="{{BASE_URL}}taskpane.html"/>
+      </bt:Urls>
+      <bt:ShortStrings>
+        <bt:String id="GroupLabel" DefaultValue="DMARC Shield">
+          <bt:Override Locale="nl-NL" Value="DMARC Shield"/>
+          <bt:Override Locale="fr-FR" Value="DMARC Shield"/>
+          <bt:Override Locale="de-DE" Value="DMARC Shield"/>
+        </bt:String>
+        <bt:String id="TaskpaneButton.Label" DefaultValue="Check sender">
+          <bt:Override Locale="nl-NL" Value="Afzender controleren"/>
+          <bt:Override Locale="fr-FR" Value="Vérifier l'expéditeur"/>
+          <bt:Override Locale="de-DE" Value="Absender prüfen"/>
+        </bt:String>
+      </bt:ShortStrings>
+      <bt:LongStrings>
+        <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Show whether this message passed DMARC, SPF and DKIM, and whether the sender's domain is protected against spoofing.">
+          <bt:Override Locale="nl-NL" Value="Toon of dit bericht DMARC, SPF en DKIM heeft doorstaan en of het domein van de afzender beschermd is tegen spoofing."/>
+          <bt:Override Locale="fr-FR" Value="Indique si ce message a réussi DMARC, SPF et DKIM et si le domaine de l'expéditeur est protégé contre l'usurpation."/>
+          <bt:Override Locale="de-DE" Value="Zeigt, ob diese Nachricht DMARC, SPF und DKIM bestanden hat und ob die Domain des Absenders vor Spoofing geschützt ist."/>
+        </bt:String>
+      </bt:LongStrings>
+    </Resources>
+
+    <VersionOverrides xmlns="http://schemas.microsoft.com/office/mailappversionoverrides/1.1" xsi:type="VersionOverridesV1_1">
+      <Requirements>
+        <bt:Sets DefaultMinVersion="1.8">
+          <bt:Set Name="Mailbox"/>
+        </bt:Sets>
+      </Requirements>
+      <Hosts>
+        <Host xsi:type="MailHost">
+          <DesktopFormFactor>
+            <FunctionFile resid="Commands.Url"/>
+            <ExtensionPoint xsi:type="MessageReadCommandSurface">
+              <OfficeTab id="TabDefault">
+                <Group id="msgReadGroup">
+                  <Label resid="GroupLabel"/>
+                  <Control xsi:type="Button" id="msgReadOpenPaneButton">
+                    <Label resid="TaskpaneButton.Label"/>
+                    <Supertip>
+                      <Title resid="TaskpaneButton.Label"/>
+                      <Description resid="TaskpaneButton.Tooltip"/>
+                    </Supertip>
+                    <Icon>
+                      <bt:Image size="16" resid="Icon.16x16"/>
+                      <bt:Image size="32" resid="Icon.32x32"/>
+                      <bt:Image size="80" resid="Icon.80x80"/>
+                    </Icon>
+                    <Action xsi:type="ShowTaskpane">
+                      <SourceLocation resid="Taskpane.Url"/>
+                      <SupportsPinning>true</SupportsPinning>
+                    </Action>
+                  </Control>
+                </Group>
+              </OfficeTab>
+            </ExtensionPoint>
+          </DesktopFormFactor>
+        </Host>
+      </Hosts>
+      <Resources>
+        <bt:Images>
+          <bt:Image id="Icon.16x16" DefaultValue="{{BASE_URL}}assets/icon-16.png"/>
+          <bt:Image id="Icon.32x32" DefaultValue="{{BASE_URL}}assets/icon-32.png"/>
+          <bt:Image id="Icon.80x80" DefaultValue="{{BASE_URL}}assets/icon-80.png"/>
+        </bt:Images>
+        <bt:Urls>
+          <bt:Url id="Commands.Url" DefaultValue="{{BASE_URL}}commands.html"/>
+          <bt:Url id="Taskpane.Url" DefaultValue="{{BASE_URL}}taskpane.html"/>
+        </bt:Urls>
+        <bt:ShortStrings>
+          <bt:String id="GroupLabel" DefaultValue="DMARC Shield">
+            <bt:Override Locale="nl-NL" Value="DMARC Shield"/>
+            <bt:Override Locale="fr-FR" Value="DMARC Shield"/>
+            <bt:Override Locale="de-DE" Value="DMARC Shield"/>
+          </bt:String>
+          <bt:String id="TaskpaneButton.Label" DefaultValue="Check sender">
+            <bt:Override Locale="nl-NL" Value="Afzender controleren"/>
+            <bt:Override Locale="fr-FR" Value="Vérifier l'expéditeur"/>
+            <bt:Override Locale="de-DE" Value="Absender prüfen"/>
+          </bt:String>
+        </bt:ShortStrings>
+        <bt:LongStrings>
+          <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Show whether this message passed DMARC, SPF and DKIM, and whether the sender's domain is protected against spoofing.">
+            <bt:Override Locale="nl-NL" Value="Toon of dit bericht DMARC, SPF en DKIM heeft doorstaan en of het domein van de afzender beschermd is tegen spoofing."/>
+            <bt:Override Locale="fr-FR" Value="Indique si ce message a réussi DMARC, SPF et DKIM et si le domaine de l'expéditeur est protégé contre l'usurpation."/>
+            <bt:Override Locale="de-DE" Value="Zeigt, ob diese Nachricht DMARC, SPF und DKIM bestanden hat und ob die Domain des Absenders vor Spoofing geschützt ist."/>
+          </bt:String>
+        </bt:LongStrings>
+      </Resources>
+    </VersionOverrides>
+  </VersionOverrides>
+</OfficeApp>
