@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run test:coverage
+      - run: npm run build
+      - name: Validate manifest (Microsoft validation service)
+        run: npx office-addin-manifest validate dist/manifest.xml
+      - name: Check that the built task pane keeps its strict CSP
+        run: |
+          grep -q "default-src 'none'" dist/taskpane.html
+          grep -q "connect-src https://dns.quad9.net https://cloudflare-dns.com https://dns.google;" dist/taskpane.html
+          ! grep -R --include=*.js -E "XMLHttpRequest|sendBeacon|new WebSocket" dist/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist

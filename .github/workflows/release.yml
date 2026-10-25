@@ -1,0 +1,75 @@
+# Publishes a tagged release: GitHub release with the manifest + GitHub Pages deploy.
+# The hosted files ARE the add-in for every installed user, so Pages is only
+# deployed from release tags, never from every push to main.
+name: Release
+
+on:
+  push:
+    tags: ['v*.*.*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run test:coverage
+      - run: npm run build
+      - run: npx office-addin-manifest validate dist/manifest.xml
+      - name: Tag matches package.json version
+        if: startsWith(github.ref, 'refs/tags/')
+        run: test "v$(node -p "require('./package.json').version")" = "${GITHUB_REF_NAME}"
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - name: Release assets
+        run: |
+          cp dist/manifest.xml manifest.xml
+          (cd dist && zip -qr ../dmarc-shield-dist.zip .)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-assets
+          path: |
+            manifest.xml
+            dmarc-shield-dist.zip
+
+  deploy-pages:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
+
+  github-release:
+    needs: deploy-pages
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: release-assets
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" manifest.xml dmarc-shield-dist.zip \
+            --repo "$GITHUB_REPOSITORY" --title "$GITHUB_REF_NAME" --generate-notes \
+            --notes "Sideload \`manifest.xml\` or deploy it via the Microsoft 365 admin center. See SUPPORT: https://berndverhofstadt.github.io/dmarc-shield/support.html"
