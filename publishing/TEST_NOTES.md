@@ -21,8 +21,13 @@ How to test:
      a test message sent from an external server with a spoofed From address).
 4. The information bar above the message shows the same result. It can be turned
    off under Settings.
-5. Pin the pane and select other messages: the result updates for each message.
-6. Without Outlook, sample results can be viewed in a browser:
+5. Brand logo (BIMI, optional): on a message from linkedin.com or paypal.com,
+   click "Check brand logo". The logo appears with a green "Verified logo" badge
+   (VMC validated in the add-in). Mail from ebay.com shows blue because DigiCert's
+   certificate host doesn't allow browsers to download it (CORS). Domains without
+   BIMI show grey.
+6. Pin the pane and select other messages: the result updates for each message.
+7. Without Outlook, sample results can be viewed in a browser:
    https://berndverhofstadt.github.io/dmarc-shield/taskpane.html?demo=verified
    (also demo=authenticated, arc, unprotected, lookalike, internal).
 
@@ -30,6 +35,7 @@ Notes:
 - Not offered on Outlook for iOS/Android on purpose: mobile clients do not provide
   getAllInternetHeadersAsync (Mailbox 1.8), so the manifest has no MobileFormFactor.
 - Permission is ReadItem. The add-in does not modify messages or the mailbox.
-- The only network requests besides Office.js are the optional DNS-over-HTTPS
-  lookups to dns.quad9.net (default), cloudflare-dns.com or dns.google, enforced
-  by a Content Security Policy. Source code: https://github.com/berndverhofstadt/dmarc-shield
+- Network requests besides Office.js happen only when the user opts in: DNS-over-HTTPS
+  lookups to dns.quad9.net (default), cloudflare-dns.com or dns.google, and for BIMI
+  the logo/certificate URLs published in the sender's BIMI DNS record. Nothing from
+  the message is sent. Source code: https://github.com/berndverhofstadt/dmarc-shield

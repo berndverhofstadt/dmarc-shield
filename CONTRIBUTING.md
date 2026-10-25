@@ -10,9 +10,12 @@ change must keep that true:
 
 - No backend, analytics, telemetry, error reporting, CDN fonts or third-party
   scripts. Office.js from Microsoft's CDN is the only external script.
-- Network access lives only in `src/dns/`, runs only after the user opts in,
-  and sends only `_dmarc.<domain>` names. ESLint blocks `fetch`, `XMLHttpRequest`,
-  `WebSocket`, `EventSource` and `sendBeacon` elsewhere in `src/`.
+- Network access lives only in `src/dns/` (DoH: `_dmarc`/`_bimi` names to the
+  chosen resolver) and `src/bimi/lookup.ts` (the URLs in the sender's BIMI
+  record). Both run only after the user opts in. ESLint blocks `fetch`,
+  `XMLHttpRequest`, `WebSocket`, `EventSource` and `sendBeacon` elsewhere in `src/`.
+- Untrusted SVG (BIMI logos) is only ever shown through an `<img>` data URL,
+  never inlined into the DOM.
 - Never put header content into the DOM as HTML. Use `textContent` (the `h()`
   helper in `src/ui/dom.ts` does this). No `innerHTML`.
 - If you touch the CSP (`src/*.html`, `public/staticwebapp.config.json`), update

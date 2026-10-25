@@ -39,6 +39,11 @@ Website: <https://berndverhofstadt.github.io/dmarc-shield/> ·
   Exchange Online doesn't record the policy, so there's an **opt-in**,
   privacy-preserving DNS-over-HTTPS lookup of the sender's `_dmarc` record
   (Quad9 by default, or Cloudflare or Google).
+- **Brand logos (BIMI), opt-in.** 🟢 when the logo is backed by a Verified or
+  Common Mark Certificate, validated in the add-in against the bundled
+  DigiCert, SSL.com and GlobalSign mark roots. 🔵 for a published logo without
+  a (checkable) certificate. ⚪ for no BIMI. Only for mail that passed DMARC
+  under `quarantine`/`reject`.
 - **Info bar** on the message, plus a task pane with a plain-language "what
   does this mean", raw headers, settings and a pinnable pane.
 - Light/dark/high-contrast, WCAG AA, keyboard accessible, works at narrow widths.
@@ -78,6 +83,15 @@ Website: <https://berndverhofstadt.github.io/dmarc-shield/> ·
 - **Policy visibility.** Without the optional DNS lookup, Exchange Online mail
   that passes DMARC is shown as *Authenticated* (blue), because Exchange doesn't
   record `p=` in the headers.
+- **BIMI.**
+  - Microsoft doesn't support BIMI, so in Outlook.com/Microsoft 365
+    mailboxes the add-in checks it itself. That means downloading the logo
+    and certificate from the sender's BIMI host, which sees your IP address.
+    It's opt-in, see [PRIVACY.md](PRIVACY.md).
+  - Some certificate hosts (notably `vmc.digicert.com`, Apple, Valimail) don't
+    allow browsers to download their files (CORS), so those brands show blue
+    with "certificate couldn't be checked".
+  - Revocation (OCSP/CRL) and Certificate Transparency aren't checked.
 - **Heuristics.** Lookalike detection and organisational-domain guesses are
   offline heuristics (no brand list, no Public Suffix List) and can miss
   things. A verified sender proves origin, not that content is safe.

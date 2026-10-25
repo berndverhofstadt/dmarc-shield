@@ -27,6 +27,10 @@ Only the latest release, as served from
 | Display-name tricks (`"ceo@corp" <x@evil>`) | The address is always taken from the angle-addr; embedded addresses in the display name are flagged. |
 | XSS through header content | All dynamic text is written with `textContent`; no `innerHTML`, no `eval`. |
 | Data exfiltration / supply chain | No runtime npm dependencies (everything is bundled source from this repo). Strict CSP (below). ESLint forbids network APIs outside `src/dns/`. |
+| Forged BIMI logo header | `BIMI-Indicator` is only used when the trusted A-R contains `bimi=pass`. Receivers without BIMI support, such as Exchange Online, don't strip sender-supplied BIMI headers. |
+| Fake or stolen-name mark certificate | The chain must verify (WebCrypto signatures) up to one of three bundled roots (DigiCert Verified Mark Root CA, SSL.com VMC RSA Root CA 2024, GlobalSign Verified Mark Root R42; fingerprints in `src/bimi/roots.ts`). Roots inside the downloaded PEM are never trusted. Also checked: the BIMI EKU, CA flags, validity dates, the SAN domain. Not checked: revocation (OCSP/CRL) and CT SCTs. |
+| Logo shown on spoofed mail | BIMI is only evaluated when DMARC passed under `p=reject` or `p=quarantine` with pct=100 (draft-brand-indicators §7.1). |
+| Malicious SVG logo | Logos are rendered only as `<img src="data:image/svg+xml;base64,…">`. SVG in an image context runs no scripts and loads no external resources. Downloads are capped (certificate 256 KB, logo 64 KB) and time out. |
 | Malicious DNS answers | DoH responses are parsed defensively (bounds-checked, compression-loop-safe). Only the policy fields are used, so a spoofed record can at most change the colour between green and blue, never hide a forgery finding. The resolver is trusted; DNSSEC isn't validated client-side. |
 
 ### Trust assumption
@@ -47,7 +51,7 @@ script-src 'self' https://appsforoffice.microsoft.com;
 style-src 'self';
 img-src 'self' data:;
 font-src 'self';
-connect-src https://dns.quad9.net https://cloudflare-dns.com https://dns.google;
+connect-src https:;
 frame-src 'none'; worker-src 'none'; manifest-src 'none'; media-src 'none';
 object-src 'none'; form-action 'none'; base-uri 'none'; upgrade-insecure-requests
 ```
@@ -55,8 +59,12 @@ object-src 'none'; form-action 'none'; base-uri 'none'; upgrade-insecure-request
 - `script-src` allows Office.js, which Microsoft requires to be loaded from its
   CDN (Marketplace policy 1120.1). Office.js loads its own helper scripts from
   the same origin.
-- `connect-src` allows only the three DoH resolvers. The code contacts them only
-  after the user clicks *Look up policy* or enables automatic lookups.
+- `connect-src https:` is needed because the opt-in BIMI check downloads
+  logos and certificates from whatever HTTPS address the sender's BIMI record
+  names. Network code lives only in `src/dns/` (DoH to the three fixed resolvers)
+  and `src/bimi/lookup.ts`. ESLint forbids `fetch` elsewhere, and both only run
+  after the user opts in. `img-src` stays `'self' data:`, so the pane never
+  loads remote images.
 - The website pages (`index`, `privacy`, `terms`, `support`) run no script at
   all: `default-src 'none'; style-src 'self'; img-src 'self'`.
 

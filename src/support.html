@@ -86,6 +86,13 @@
         Those domains publish a DMARC policy of <code>p=none</code> (monitor only), so a forged
         gmail.com sender isn't rejected everywhere. DMARC Shield reports this honestly.
       </p>
+      <h3>Why is a brand logo blue when the company has a certificate?</h3>
+      <p>
+        Some certificate hosts (for example DigiCert's <code>vmc.digicert.com</code>) don't allow
+        add-ins running in a browser to download the certificate. DMARC Shield then can't verify it
+        and honestly shows blue. Mail providers that support BIMI themselves don't have this
+        limitation; Microsoft doesn't support BIMI.
+      </p>
       <h3>Does it work on my phone?</h3>
       <p>
         No. Outlook for iOS and Android don't allow add-ins to read message headers (Microsoft

@@ -19,7 +19,9 @@ The add-in requests Outlook's **read item** permission, the lowest level that
 can read headers. It can't read other messages, send mail or change your
 mailbox.
 
-## The one optional network request: DNS lookup (off by default)
+## Optional network requests (both off by default)
+
+### 1. DMARC policy lookup
 
 If your mail provider didn't record the sender's DMARC policy (common with
 Microsoft 365), you can click **Look up policy** or enable automatic lookups in
@@ -34,6 +36,24 @@ record:
   [Cloudflare](https://developers.cloudflare.com/1.1.1.1/privacy/public-dns-resolver/),
   [Google](https://developers.google.com/speed/public-dns/privacy).
 - **Kept:** in memory only, while the pane is open.
+
+### 2. Brand logo check (BIMI)
+
+If you click **Check brand logo** or enable automatic BIMI checks, and the
+message passed DMARC with an enforcing policy, the add-in:
+
+- asks the same DNS resolver for `default._bimi.<sender domain>` (and the
+  organisational domain), and then
+- downloads the logo (`l=`) and/or mark certificate (`a=`) from the HTTPS
+  addresses published in that DNS record, typically the brand's own website
+  or its certificate authority (e.g. DigiCert).
+
+**That server can see your IP address and when the request was made.** The
+addresses come from DNS and are the same for every recipient, so they carry no
+information about you or the message. No headers, addresses or content are
+sent. The certificate is validated inside the add-in, and results are kept in
+memory only. Mail providers that support BIMI themselves (not Microsoft) may
+already include the result in the headers; then no request is made.
 
 ## Settings
 
@@ -52,8 +72,10 @@ no access to them.
 
 ## Enforcement
 
-A strict Content Security Policy restricts the add-in to its own code,
-Office.js, and the three DNS resolvers above. See [SECURITY.md](SECURITY.md).
+A strict Content Security Policy restricts the add-in to its own code and
+Office.js. It allows HTTPS connections because BIMI logo hosts can be any
+server, but the code only connects after you opt in (enforced by code
+review and an ESLint rule). See [SECURITY.md](SECURITY.md).
 The source is public, so anyone can verify this.
 
 ## Contact

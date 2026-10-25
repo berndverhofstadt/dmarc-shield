@@ -6,6 +6,22 @@ All notable changes are listed here. The format follows
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-10-25
+
+### Added
+
+- Brand logo check (BIMI), opt-in and off by default. Uses the receiving
+  server's result when present; otherwise looks up the BIMI record over DoH,
+  downloads the mark certificate/logo and validates VMC/CMC chains in the
+  add-in against bundled DigiCert, SSL.com and GlobalSign roots. Green for a
+  verified certificate, blue for a logo without one, grey for no BIMI.
+
+### Changed
+
+- Content Security Policy `connect-src` is now `https:`, because BIMI hosts are
+  arbitrary. Network code remains confined to two opt-in modules.
+- DNS name validation accepts service labels such as `_bimi` in any position.
+
 ## [1.0.0] - 2026-10-25
 
 ### Added

@@ -127,6 +127,15 @@
         </figcaption>
       </figure>
 
+      <h2>Brand logos (BIMI)</h2>
+      <p>
+        Optionally, DMARC Shield shows the sender's brand logo. It's
+        <strong>green</strong> when the logo is backed by a Verified or Common Mark Certificate,
+        checked in the add-in, and <strong>blue</strong> when the domain publishes a logo without
+        one. Logos are only shown for mail that passed DMARC with an enforcing policy, so a spoofed
+        message can't borrow a real brand's logo.
+      </p>
+
       <h2>Privacy by design</h2>
       <ul>
         <li>
@@ -139,6 +148,10 @@
           Optional: if your mail provider doesn't record the sender's policy (common with Microsoft
           365), you can choose to look it up. Only the sender's domain name is sent, to a DNS
           resolver you choose (Quad9, Cloudflare or Google). This is off by default.
+        </li>
+        <li>
+          Optional brand logo check (BIMI): downloads the logo and certificate from the address the
+          sender publishes in DNS, which can see your IP address. Off by default.
         </li>
         <li>
           A strict Content Security Policy enforces this in the browser. Read the

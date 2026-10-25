@@ -33,7 +33,8 @@
     <main id="content">
       <h1>Privacy policy</h1>
       <p class="meta">
-        Last updated: 25 October 2026 · Applies to the DMARC Shield Outlook add-in and this website.
+        Last updated: 25 October 2026 (BIMI check added) · Applies to the DMARC Shield Outlook
+        add-in and this website.
       </p>
 
       <h2>In short</h2>
@@ -82,6 +83,30 @@
         <li><strong>Storage:</strong> results are kept in memory only while the pane is open.</li>
       </ul>
 
+      <h2>Optional brand logo check: BIMI (off by default)</h2>
+      <p>
+        If you click <em>Check brand logo</em> or enable automatic BIMI checks, and the message
+        passed DMARC with an enforcing policy, the add-in looks up the sender's BIMI record
+        (<code>default._bimi.example.com</code>) through the same DNS resolver. It then downloads
+        the logo and/or mark certificate from the HTTPS addresses published in that record,
+        typically the brand's website or its certificate authority.
+      </p>
+      <ul>
+        <li>
+          <strong>What the logo host learns:</strong> your IP address and the time of the request.
+          The addresses come from public DNS and are identical for every recipient, so they reveal
+          nothing about you or the message. No message data is sent.
+        </li>
+        <li>
+          <strong>Where it's checked:</strong> the certificate is validated inside the add-in.
+          Results are kept in memory only.
+        </li>
+        <li>
+          If your mail provider already performed BIMI (some do; Microsoft doesn't), its result in
+          the headers is used and no request is made.
+        </li>
+      </ul>
+
       <h2>Settings</h2>
       <p>
         Your settings (info bar, DNS lookup, resolver, language) are stored with Outlook's
@@ -111,8 +136,9 @@
       <h2>Technical enforcement</h2>
       <p>
         The add-in ships with a strict Content Security Policy. The browser only lets it load code
-        from itself and Microsoft's Office library, and only lets it connect to the three DNS
-        resolvers above. The source code is public, so anyone can verify these statements:
+        from itself and Microsoft's Office library, and logos are only shown as inert images.
+        Network connections are limited to HTTPS and are only made after you opt in to the DNS
+        lookup or BIMI check. The source code is public, so anyone can verify these statements:
         <a href="https://github.com/berndverhofstadt/dmarc-shield"
           >github.com/berndverhofstadt/dmarc-shield</a
         >.

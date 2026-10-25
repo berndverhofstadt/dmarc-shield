@@ -188,6 +188,49 @@ The effective policy (`p`, or `sp` for subdomains) comes from, in order:
 Honesty rule: the UI states the policy *and where it came from* (header /
 DNS / ARC). It never claims a policy it hasn't seen.
 
+### 4c. BIMI (opt-in)
+
+Researched 2026-10-25 against draft-brand-indicators-for-message-identification-14
+and BIMI Group's provider list ("Does not support BIMI: Microsoft").
+
+- **Separate indicator.** BIMI is a separate indicator below the verdict. It
+  doesn't change the DMARC verdict.
+  - **Green:** a VMC or CMC (mark type *Registered/Government Mark* = VMC,
+    *Prior Use/Modified Registered* = CMC) validated.
+  - **Blue:** a published logo without a certificate, or the certificate
+    couldn't be downloaded.
+  - **Grey:** no BIMI, declined, not eligible, not checked, or the certificate
+    was rejected (grey + warning).
+- **Eligibility (§7.1):** effective DMARC pass, and policy `reject`, or
+  `quarantine` at pct=100, with no testing mode. If the policy is unknown (EXO),
+  the BIMI check first does the DMARC DNS lookup.
+- **Receiver first:** `bimi=` + `policy.authority` from the trusted A-R block.
+  `BIMI-Indicator` is used only when that says `bimi=pass`, because receivers
+  that don't do BIMI pass forged ones through.
+- **Client check** (Microsoft mailboxes; setting `bimiLookup`, off by default,
+  or the one-off button):
+  1. DoH `default._bimi.<from>`, then `<org domain>`.
+  2. GET `a=` (≤ 256 KB) and validate.
+  3. Only if there's no usable certificate, GET `l=` (≤ 64 KB).
+  - Requests use `credentials: omit` and `no-referrer`, and results are cached
+    in memory.
+- **Validation** (`src/bimi/vmc.ts`):
+  - parse DER (bounds-checked);
+  - leaf with EKU `1.3.6.1.5.5.7.3.31`;
+  - chain by exact issuer/subject DER up to a **bundled** root (DigiCert,
+    SSL.com, GlobalSign; Sectigo issues under the SSL.com root);
+  - WebCrypto RSA PKCS#1 / ECDSA signatures;
+  - CA flag on intermediates, validity, SAN contains the From or
+    organisational domain;
+  - logo from the RFC 3709 logotype `data:` URI (gzip).
+  - Not checked: OCSP/CRL, CT SCTs, `l=` vs logotype hash (the certificate's
+    logo is shown instead).
+- **CORS reality** (tested in Edge): PayPal, LinkedIn, Dropbox and Booking
+  hosts allow it; `vmc.digicert.com`, Apple and Valimail don't → blue,
+  "couldn't be checked". A proxy would fix this but violates "no backend".
+- **CSP:** `connect-src https:` (hosts are arbitrary). `img-src 'self' data:`
+  stays. Logos are only rendered as `<img>` data URLs.
+
 ## 5. Verdicts (decisions Q5–Q8)
 
 Three outcomes. "DMARC pass" means standard DMARC semantics: SPF **or**
@@ -316,5 +359,7 @@ anyone else. PRIVACY.md says this in exactly these terms.
   forwarder.
 - **Q8 Green rule:** standard DMARC pass (SPF or DKIM aligned) + p=reject.
 - **Q9 Resolver default:** Quad9.
+- **Q10 BIMI:** opt-in client-side check (no proxy); VMC and CMC both green;
+  blue shows the `l=` logo.
 - **Hosting:** `https://berndverhofstadt.github.io/dmarc-shield/`. The build
   can override this with `ADDIN_BASE_URL`, for example for Azure SWA.

@@ -66,6 +66,9 @@ What it checks
 • Lookalike domains: international characters that imitate letters (for
   example a Cyrillic "а" in "pаypal.com"), mixed alphabets, lookalikes of your
   own domain, and reply addresses that imitate the sender.
+• Brand logos (BIMI), optional: shows the sender's logo, in green when it is
+  backed by a Verified or Common Mark Certificate checked in the add-in, and
+  in blue when the logo has no certificate.
 • A short notice in the message's information bar, and an explanation of what
   each result means.
 
@@ -77,6 +80,9 @@ Privacy by design
   policy in the headers. If you choose to, DMARC Shield can look it up in DNS.
   Only the sender's domain name is sent, to the resolver you pick (Quad9,
   Cloudflare or Google).
+• Optional, off by default: the brand logo check downloads the logo and its
+  certificate from the address the sender publishes in DNS; that server can
+  see your IP address.
 • Lowest permission needed to read headers ("read item"). Open source under the
   MIT licence.
 
