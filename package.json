@@ -1,6 +1,6 @@
 {
   "name": "dmarc-shield",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "private": true,
   "description": "Outlook add-in that shows DMARC, SPF and DKIM authentication status, entirely client-side.",
   "license": "MIT",

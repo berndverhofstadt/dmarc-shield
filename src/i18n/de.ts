@@ -61,6 +61,10 @@ export const de: Messages = {
   'dns.always': 'Immer automatisch nachschlagen',
   'dns.checking': 'DMARC-Eintrag von {domain} wird nachgeschlagen…',
   'dns.failed': 'Die DNS-Abfrage ist fehlgeschlagen: {message}',
+  'dns.failed.network':
+    '{resolver} ({host}) ist nicht erreichbar. Eine Firewall, ein DNS-Filter (etwa Pi-hole oder NextDNS), ein Virenscanner oder eine Browsererweiterung blockiert möglicherweise DNS-over-HTTPS.',
+  'dns.failed.timeout': '{resolver} hat nicht rechtzeitig geantwortet.',
+  'dns.tryOther': '{resolver} versuchen',
   'dns.norecord': 'Für {domain} wurde kein DMARC-Eintrag gefunden.',
 
   'findings.heading': 'Warnungen und Hinweise',

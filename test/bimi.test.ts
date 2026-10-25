@@ -561,6 +561,7 @@ describe('BIMI view', () => {
     expect(bimiView({ kind: 'checking', domain: 'xn--bcher-kva.example' }).text[0]).toBe(
       'Checking BIMI for bücher.example…',
     );
+    expect(bimiView({ kind: 'error', message: 'x', retry: ['google'] }).offer).toBe(false);
     expect(bimiView({ kind: 'error', message: 'boom' })).toMatchObject({
       offer: true,
       text: ['BIMI check failed: boom'],

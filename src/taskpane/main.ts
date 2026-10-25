@@ -5,7 +5,7 @@
  */
 import { bimiEligibility } from '../bimi/eligibility';
 import { type BimiOutcome, bimiFromReceiver, lookupBimi } from '../bimi/lookup';
-import { type ResolverId, RESOLVERS, lookupDmarcPolicy } from '../dns/lookup';
+import { DnsError, type ResolverId, RESOLVERS, lookupDmarcPolicy } from '../dns/lookup';
 import { LOCALE_NAMES, type Locale, type MessageKey, resolveLocale, setLocale, t } from '../i18n';
 import { notify } from '../office/notify';
 import {
@@ -163,7 +163,7 @@ type DnsState =
   | { kind: 'hidden' }
   | { kind: 'offer'; domain: string }
   | { kind: 'checking'; domain: string }
-  | { kind: 'failed'; message: string }
+  | { kind: 'failed'; message: string; retry: ResolverId[] }
   | { kind: 'norecord'; domain: string };
 
 function renderDns(state: DnsState): void {
@@ -191,7 +191,9 @@ function renderDns(state: DnsState): void {
       box.append(h('p', {}, t('dns.checking', { domain: toUnicode(state.domain) })));
       break;
     case 'failed':
-      box.append(h('p', {}, t('dns.failed', { message: state.message })));
+      box.append(h('p', {}, state.message));
+      if (state.retry.length)
+        box.append(retryButtons(state.retry, (r) => void runLookup(generation, r)));
       break;
     case 'norecord':
       box.append(h('p', {}, t('dns.norecord', { domain: toUnicode(state.domain) })));
@@ -199,6 +201,40 @@ function renderDns(state: DnsState): void {
     case 'hidden':
       break;
   }
+}
+
+/** Human-readable text for a failed DoH request. */
+function dnsErrorText(e: unknown): string {
+  if (e instanceof DnsError && e.resolver) {
+    const r = RESOLVERS[e.resolver];
+    if (e.kind === 'network')
+      return t('dns.failed.network', { resolver: r.name, host: new URL(r.url).host });
+    if (e.kind === 'timeout') return t('dns.failed.timeout', { resolver: r.name });
+  }
+  return t('dns.failed', { message: e instanceof Error ? e.message : String(e) });
+}
+
+/** Other resolvers worth offering after a connection failure (the user picks; no silent fallback). */
+function otherResolvers(e: unknown): ResolverId[] {
+  if (!(e instanceof DnsError) || (e.kind !== 'network' && e.kind !== 'timeout') || !e.resolver)
+    return [];
+  return (Object.keys(RESOLVERS) as ResolverId[]).filter((id) => id !== e.resolver);
+}
+
+function retryButtons(resolvers: ResolverId[], run: (r: ResolverId) => void): HTMLElement {
+  return h(
+    'div',
+    { class: 'actions' },
+    ...resolvers.map((r) => {
+      const b = h(
+        'button',
+        { type: 'button', class: 'button secondary' },
+        t('dns.tryOther', { resolver: RESOLVERS[r].name }),
+      );
+      b.addEventListener('click', () => run(r));
+      return b;
+    }),
+  );
 }
 
 function renderHelp(): void {
@@ -271,6 +307,12 @@ function renderBimi(state: BimiState | null): void {
   $('bimi-text').replaceChildren(...view.text.map((line) => h('p', {}, line)));
   const actions = $('bimi-actions');
   clear(actions);
+  if (state.kind === 'error' && state.retry?.length) {
+    actions.append(
+      ...retryButtons(state.retry as ResolverId[], (r) => void updateBimi(generation, true, r))
+        .children,
+    );
+  }
   if (view.offer) {
     const check = h('button', { type: 'button', class: 'button' }, t('bimi.button'));
     check.addEventListener('click', () => void updateBimi(generation, true));
@@ -295,12 +337,12 @@ function present(): void {
 
 // ---------------------------------------------------------------- flow
 
-async function runLookup(gen: number): Promise<void> {
+async function runLookup(gen: number, resolver: ResolverId = settings.resolver): Promise<void> {
   if (!current?.v.needsPolicy || !current.v.policyDomain) return;
   const domain = current.v.policyDomain;
   renderDns({ kind: 'checking', domain });
   try {
-    const policy = await env.lookup(domain, settings.resolver);
+    const policy = await env.lookup(domain, resolver);
     if (gen !== generation || !current) return;
     if (policy) {
       current.v = decide(current.a, policy);
@@ -312,7 +354,7 @@ async function runLookup(gen: number): Promise<void> {
     }
   } catch (e) {
     if (gen !== generation) return;
-    renderDns({ kind: 'failed', message: e instanceof Error ? e.message : String(e) });
+    renderDns({ kind: 'failed', message: dnsErrorText(e), retry: otherResolvers(e) });
   }
 }
 
@@ -326,7 +368,11 @@ function bimiDomain(c: Current): string | undefined {
  * otherwise we check ourselves, but only when the user asked (`requested`) or
  * enabled automatic checks.
  */
-async function updateBimi(gen: number, requested: boolean): Promise<void> {
+async function updateBimi(
+  gen: number,
+  requested: boolean,
+  resolver: ResolverId = settings.resolver,
+): Promise<void> {
   if (!current) return;
   const domain = bimiDomain(current);
   const receiver = domain ? bimiFromReceiver(current.a, domain) : null;
@@ -346,7 +392,7 @@ async function updateBimi(gen: number, requested: boolean): Promise<void> {
   try {
     if (eligibility === 'needs-policy') {
       // BIMI depends on the DMARC policy; look it up first (same resolver).
-      const policy = await env.lookup(domain, settings.resolver);
+      const policy = await env.lookup(domain, resolver);
       if (gen !== generation || !current) return;
       if (policy) {
         current.v = decide(current.a, policy);
@@ -361,12 +407,12 @@ async function updateBimi(gen: number, requested: boolean): Promise<void> {
         });
       }
     }
-    const outcome = await env.bimi(domain, settings.resolver);
+    const outcome = await env.bimi(domain, resolver);
     if (gen !== generation) return;
     renderBimi({ kind: 'outcome', outcome });
   } catch (e) {
     if (gen !== generation) return;
-    renderBimi({ kind: 'error', message: e instanceof Error ? e.message : String(e) });
+    renderBimi({ kind: 'error', message: dnsErrorText(e), retry: otherResolvers(e) });
   }
 }
 
@@ -509,13 +555,20 @@ function startOffice(): void {
   void evaluateOfficeItem();
 }
 
-function startDemo(sample: DemoSample, lang: string | null, banner: boolean): void {
+function startDemo(
+  sample: DemoSample,
+  lang: string | null,
+  banner: boolean,
+  dnsFail: boolean,
+): void {
+  // `dnsfail=1` simulates a blocked resolver, to test the error UI.
+  const fail = (r: ResolverId) => Promise.reject(new DnsError('Failed to fetch', 'network', r));
   init({
     // Demo lookups are fake (no network), so BIMI can be on by default here.
     store: memoryStore({ bimiLookup: true, ...(lang ? { language: lang as Locale } : {}) }),
     displayLanguage: navigator.language,
-    lookup: async () => sample.dnsPolicy ?? null,
-    bimi: async (domain) => sample.bimi ?? { kind: 'none', domain },
+    lookup: async (_d, r) => (dnsFail ? fail(r) : (sample.dnsPolicy ?? null)),
+    bimi: async (domain, r) => (dnsFail ? fail(r) : (sample.bimi ?? { kind: 'none', domain })),
   });
   $('demo-banner').hidden = !banner;
   wireSettings(rerender);
@@ -538,7 +591,14 @@ function boot(): void {
   const demoName = params.get('demo');
   const sample = demoName !== null ? DEMOS[demoName] : undefined;
   // `clean=1` hides the demo banner, for Store screenshots only.
-  if (sample) return startDemo(sample, params.get('lang'), params.get('clean') !== '1');
+  if (sample) {
+    return startDemo(
+      sample,
+      params.get('lang'),
+      params.get('clean') !== '1',
+      params.get('dnsfail') === '1',
+    );
+  }
   if (typeof Office === 'undefined') return startOutside();
   Office.onReady((info) =>
     info.host === Office.HostType.Outlook ? startOffice() : startOutside(),

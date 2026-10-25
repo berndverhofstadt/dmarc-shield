@@ -8,7 +8,8 @@ export type BimiState =
   | { kind: 'ineligible'; reason: Exclude<BimiEligibility, 'eligible' | 'needs-policy'> }
   | { kind: 'off'; domain: string }
   | { kind: 'checking'; domain: string }
-  | { kind: 'error'; message: string }
+  /** `message` is already localised; `retry` lists other resolvers to offer. */
+  | { kind: 'error'; message: string; retry?: readonly string[] }
   | { kind: 'outcome'; outcome: BimiOutcome };
 
 export interface BimiView {
@@ -47,7 +48,8 @@ export function bimiView(s: BimiState): BimiView {
         tone: 'grey',
         badge: t('bimi.badge.unchecked'),
         text: [t('bimi.error', { message: s.message })],
-        offer: true,
+        // With alternative resolvers on offer, those buttons replace the generic ones.
+        offer: !s.retry?.length,
       };
     case 'outcome':
       return outcomeView(s.outcome);

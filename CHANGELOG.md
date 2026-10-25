@@ -6,6 +6,14 @@ All notable changes are listed here. The format follows
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-10-25
+
+### Fixed
+
+- A blocked or unreachable DNS-over-HTTPS resolver now shows which resolver
+  couldn't be reached and why (firewall, DNS filter, extension), instead of
+  "Failed to fetch", with one-click retries via the other resolvers.
+
 ## [1.1.0] - 2026-10-25
 
 ### Added

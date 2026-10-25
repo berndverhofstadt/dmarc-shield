@@ -56,6 +56,10 @@ export const en = {
   'dns.always': 'Always look up automatically',
   'dns.checking': 'Looking up the DMARC record of {domain}…',
   'dns.failed': 'The DNS lookup failed: {message}',
+  'dns.failed.network':
+    "Couldn't reach {resolver} ({host}). A firewall, a DNS filter (such as Pi-hole or NextDNS), antivirus or a browser extension may be blocking DNS-over-HTTPS.",
+  'dns.failed.timeout': "{resolver} didn't answer in time.",
+  'dns.tryOther': 'Try {resolver}',
   'dns.norecord': 'No DMARC record was found for {domain}.',
 
   'findings.heading': 'Warnings and notes',

@@ -60,6 +60,10 @@ export const fr: Messages = {
   'dns.always': 'Toujours consulter automatiquement',
   'dns.checking': 'Consultation de l’enregistrement DMARC de {domain}…',
   'dns.failed': 'La requête DNS a échoué : {message}',
+  'dns.failed.network':
+    'Impossible de joindre {resolver} ({host}). Un pare-feu, un filtre DNS (comme Pi-hole ou NextDNS), un antivirus ou une extension du navigateur bloque peut-être le DNS-over-HTTPS.',
+  'dns.failed.timeout': '{resolver} n’a pas répondu à temps.',
+  'dns.tryOther': 'Essayer {resolver}',
   'dns.norecord': 'Aucun enregistrement DMARC trouvé pour {domain}.',
 
   'findings.heading': 'Avertissements et remarques',

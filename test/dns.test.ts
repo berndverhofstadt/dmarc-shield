@@ -188,6 +188,44 @@ describe('DMARC lookup', () => {
     );
   });
 
+  it('classifies failures so the UI can explain them', async () => {
+    const blocked = vi.fn(async () => {
+      throw new TypeError('Failed to fetch');
+    });
+    await expect(
+      queryTxt('_dmarc.example.com', 'quad9', { fetchFn: blocked }),
+    ).rejects.toMatchObject({
+      kind: 'network',
+      resolver: 'quad9',
+    });
+    const slow = vi.fn(
+      (_url: string, init: RequestInit) =>
+        new Promise<Response>((_, reject) =>
+          init.signal?.addEventListener('abort', () =>
+            reject(new DOMException('aborted', 'AbortError')),
+          ),
+        ),
+    );
+    await expect(
+      queryTxt('_dmarc.example.com', 'google', { fetchFn: slow, timeoutMs: 5 }),
+    ).rejects.toMatchObject({
+      kind: 'timeout',
+      resolver: 'google',
+      message: 'timed out',
+    });
+    const http = fetchFrom({ '_dmarc.example.com': { status: 502 } });
+    await expect(
+      queryTxt('_dmarc.example.com', 'cloudflare', { fetchFn: http }),
+    ).rejects.toMatchObject({ kind: 'http' });
+    const servfail = fetchFrom({ '_dmarc.example.com': { rcode: 2 } });
+    await expect(
+      lookupDmarcPolicy('example.com', 'quad9', { fetchFn: servfail }),
+    ).rejects.toMatchObject({ kind: 'dns' });
+    await expect(
+      lookupDmarcPolicy('bad name', 'quad9', { fetchFn: servfail }),
+    ).rejects.toMatchObject({ kind: 'invalid' });
+  });
+
   it('aborts slow resolvers', async () => {
     const slow = vi.fn(
       (_url: string, init: RequestInit) =>
@@ -197,7 +235,7 @@ describe('DMARC lookup', () => {
     );
     await expect(
       queryTxt('_dmarc.example.com', 'quad9', { fetchFn: slow, timeoutMs: 5 }),
-    ).rejects.toThrow('aborted');
+    ).rejects.toThrow('timed out');
   });
 
   it('converts IDN domains before querying', async () => {

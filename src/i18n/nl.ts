@@ -59,6 +59,10 @@ export const nl: Messages = {
   'dns.always': 'Altijd automatisch opzoeken',
   'dns.checking': 'DMARC-record van {domain} opzoeken…',
   'dns.failed': 'De DNS-opzoeking is mislukt: {message}',
+  'dns.failed.network':
+    '{resolver} ({host}) is niet bereikbaar. Een firewall, DNS-filter (zoals Pi-hole of NextDNS), antivirus of browserextensie blokkeert mogelijk DNS-over-HTTPS.',
+  'dns.failed.timeout': '{resolver} antwoordde niet op tijd.',
+  'dns.tryOther': 'Probeer {resolver}',
   'dns.norecord': 'Er is geen DMARC-record gevonden voor {domain}.',
 
   'findings.heading': 'Waarschuwingen en opmerkingen',
