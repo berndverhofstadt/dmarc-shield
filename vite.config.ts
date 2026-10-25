@@ -54,6 +54,10 @@ export default defineConfig(async ({ command }) => {
         input: {
           taskpane: resolve(root, 'taskpane.html'),
           commands: resolve(root, 'commands.html'),
+          index: resolve(root, 'index.html'),
+          privacy: resolve(root, 'privacy.html'),
+          terms: resolve(root, 'terms.html'),
+          support: resolve(root, 'support.html'),
         },
       },
     },

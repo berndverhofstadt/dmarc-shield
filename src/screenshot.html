@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <!-- Dev-only page (not part of the build) used by scripts/screenshots.mjs. -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self' wss://localhost:3000"
+    />
+    <title>DMARC Shield screenshot</title>
+    <link rel="stylesheet" href="./site/screenshot.css" />
+    <script type="module" src="./site/screenshot.ts"></script>
+  </head>
+  <body>
+    <div class="caption"><img src="./assets/icon-48.png" alt="" /><span id="caption"></span></div>
+    <div class="window">
+      <div class="toolbar"><span></span><span></span><span></span><b>Outlook</b></div>
+      <div class="content">
+        <div class="message">
+          <h1 id="subject"></h1>
+          <div class="from">
+            <div class="avatar" id="avatar"></div>
+            <div><b id="from-name"></b><br /><span id="from-addr"></span></div>
+          </div>
+          <div class="body"><i></i><i></i><i class="short"></i><i></i><i class="short"></i></div>
+        </div>
+        <div class="pane-slot"></div>
+      </div>
+    </div>
+  </body>
+</html>

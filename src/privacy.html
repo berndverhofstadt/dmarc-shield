@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; style-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+    />
+    <meta name="referrer" content="no-referrer" />
+    <meta
+      name="description"
+      content="DMARC Shield collects no data. Email headers are analysed on your device and never transmitted."
+    />
+    <title>Privacy policy · DMARC Shield</title>
+    <link rel="icon" type="image/png" href="./assets/icon-32.png" />
+    <link rel="stylesheet" href="./site/site.css" />
+  </head>
+  <body>
+    <a class="skip" href="#content">Skip to content</a>
+    <header class="site">
+      <a class="brand" href="./index.html"
+        ><img src="./assets/icon-32.png" width="32" height="32" alt="" /> DMARC Shield</a
+      >
+      <nav aria-label="Site">
+        <a href="./index.html">About</a>
+        <a href="./privacy.html">Privacy</a>
+        <a href="./terms.html">Terms</a>
+        <a href="./support.html">Support</a>
+        <a href="https://github.com/berndverhofstadt/dmarc-shield">Source code</a>
+      </nav>
+    </header>
+    <main id="content">
+      <h1>Privacy policy</h1>
+      <p class="meta">
+        Last updated: 25 October 2026 · Applies to the DMARC Shield Outlook add-in and this website.
+      </p>
+
+      <h2>In short</h2>
+      <p>
+        <strong
+          >DMARC Shield does not collect, store, sell or transmit your personal data or your
+          email.</strong
+        >
+        There is no DMARC Shield server, account, analytics or tracking. The publisher never
+        receives any information about you or your messages.
+      </p>
+
+      <h2>What the add-in does with your email</h2>
+      <p>
+        When you open DMARC Shield on a message, it asks Outlook for that message's internet headers
+        and sender address. It analyses them in the add-in itself, inside Outlook on your device.
+        The headers, addresses and content are not sent to the publisher or to any third party, and
+        they are not stored: the analysis is discarded when you switch messages or close the pane.
+      </p>
+      <p>
+        The add-in requests the lowest Outlook permission that can read headers (<em>read item</em
+        >). It cannot read other messages, send mail or change anything in your mailbox.
+      </p>
+
+      <h2>Optional DNS lookup (off by default)</h2>
+      <p>
+        Some mail providers, notably Microsoft 365, don't record the sender's DMARC policy in the
+        headers. If you click <em>Look up policy</em> or enable automatic lookups in the settings,
+        the add-in asks a public DNS-over-HTTPS resolver for the DMARC record of the sender's
+        domain.
+      </p>
+      <ul>
+        <li>
+          <strong>What is sent:</strong> only DNS names of the form <code>_dmarc.example.com</code>,
+          for the sender's domain and, if no record exists there, its parent domains. No message
+          content, email addresses, subjects or identifiers are sent.
+        </li>
+        <li>
+          <strong>To whom:</strong> the resolver you choose: Quad9 (default), Cloudflare or Google.
+          As with any internet request, the resolver can see your IP address. Their policies:
+          <a href="https://quad9.net/privacy/policy/">Quad9</a>,
+          <a href="https://developers.cloudflare.com/1.1.1.1/privacy/public-dns-resolver/"
+            >Cloudflare</a
+          >, <a href="https://developers.google.com/speed/public-dns/privacy">Google</a>.
+        </li>
+        <li><strong>Storage:</strong> results are kept in memory only while the pane is open.</li>
+      </ul>
+
+      <h2>Settings</h2>
+      <p>
+        Your settings (info bar, DNS lookup, resolver, language) are stored with Outlook's
+        <em>roaming settings</em>. This means they are saved in your own mailbox by Microsoft, so
+        they follow you across Outlook apps. The publisher cannot access them.
+      </p>
+
+      <h2>Microsoft and hosting</h2>
+      <ul>
+        <li>
+          Like every Outlook add-in, DMARC Shield loads Microsoft's Office JavaScript library
+          (<code>office.js</code>) from Microsoft's servers, and runs inside Outlook. Microsoft's
+          handling of data is described in the
+          <a href="https://privacy.microsoft.com/privacystatement">Microsoft Privacy Statement</a>.
+        </li>
+        <li>
+          The add-in's files and this website are static files hosted on GitHub Pages. When your
+          Outlook downloads them, GitHub processes your IP address to serve them, as described in
+          the
+          <a
+            href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement"
+            >GitHub Privacy Statement</a
+          >. The publisher has no access to these logs and adds no analytics.
+        </li>
+      </ul>
+
+      <h2>Technical enforcement</h2>
+      <p>
+        The add-in ships with a strict Content Security Policy. The browser only lets it load code
+        from itself and Microsoft's Office library, and only lets it connect to the three DNS
+        resolvers above. The source code is public, so anyone can verify these statements:
+        <a href="https://github.com/berndverhofstadt/dmarc-shield"
+          >github.com/berndverhofstadt/dmarc-shield</a
+        >.
+      </p>
+
+      <h2>Children</h2>
+      <p>DMARC Shield is not directed at children and collects no data from anyone.</p>
+
+      <h2>Your rights</h2>
+      <p>
+        Because the publisher holds no personal data about you, there is nothing to access, correct
+        or delete. For data processed by Microsoft, GitHub or your chosen DNS resolver, please
+        contact them directly.
+      </p>
+
+      <h2>Changes and contact</h2>
+      <p>
+        Changes to this policy are published on this page and in the project's change history.
+        Questions: open an issue at
+        <a href="https://github.com/berndverhofstadt/dmarc-shield/issues"
+          >github.com/berndverhofstadt/dmarc-shield/issues</a
+        >.
+      </p>
+    </main>
+    <footer class="site">
+      <span>© 2026 Bernd Verhofstadt · MIT licence</span>
+      <a href="./privacy.html">Privacy policy</a>
+      <a href="./terms.html">Terms of use</a>
+      <a href="./support.html">Support</a>
+    </footer>
+  </body>
+</html>

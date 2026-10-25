@@ -156,6 +156,9 @@ export const nl: Messages = {
   'settings.storage':
     'Instellingen worden in uw eigen mailbox bewaard, zodat ze u volgen in alle Outlook-apps. Ze worden nooit naar ons gestuurd.',
 
+  'tip.pin':
+    'Tip: maak dit deelvenster vast (punaise bovenaan) om elk bericht automatisch te controleren. Vastmaken is beschikbaar voor Microsoft 365-werk- en schoolaccounts.',
+
   'footer.privacy': 'Privacy',
   'footer.about': 'Over',
   'footer.version': 'Versie {version}',
@@ -163,7 +166,7 @@ export const nl: Messages = {
   'infobar.verified': 'DMARC Shield: geverifieerde afzender ({domain}).',
   'infobar.internal': 'DMARC Shield: intern bericht van uw organisatie.',
   'infobar.authenticated':
-    'DMARC Shield: afzender geauthenticeerd ({domain}), maar het domein blokkeert vervalsingen niet volledig.',
+    'DMARC Shield: afzender echt ({domain}), maar vervalsingen worden niet volledig geblokkeerd.',
   'infobar.unprotected':
     'DMARC Shield: deze afzender kon niet worden geverifieerd. Wees voorzichtig met links en bijlagen.',
 };

@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; style-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+    />
+    <meta name="referrer" content="no-referrer" />
+    <meta
+      name="description"
+      content="Free, open-source Outlook add-in that shows DMARC, SPF, DKIM and ARC results as one clear verdict, entirely on your device."
+    />
+    <title>DMARC Shield: email authentication at a glance for Outlook</title>
+    <link rel="icon" type="image/png" href="./assets/icon-32.png" />
+    <link rel="stylesheet" href="./site/site.css" />
+  </head>
+  <body>
+    <a class="skip" href="#content">Skip to content</a>
+    <header class="site">
+      <a class="brand" href="./index.html"
+        ><img src="./assets/icon-32.png" width="32" height="32" alt="" /> DMARC Shield</a
+      >
+      <nav aria-label="Site">
+        <a href="./index.html">About</a>
+        <a href="./privacy.html">Privacy</a>
+        <a href="./terms.html">Terms</a>
+        <a href="./support.html">Support</a>
+        <a href="https://github.com/berndverhofstadt/dmarc-shield">Source code</a>
+      </nav>
+    </header>
+    <main id="content">
+      <h1>See at a glance whether an email really comes from who it says.</h1>
+      <p class="lead">
+        DMARC Shield is a free, open-source Outlook add-in. It reads the authentication results your
+        own mail server already recorded (DMARC, SPF, DKIM and ARC) and turns them into one clear
+        verdict, right next to the message. Everything is checked inside Outlook: the message and
+        its headers never leave your device.
+      </p>
+      <div class="cta">
+        <a class="button" href="./support.html#install">Install</a>
+        <a class="button secondary" href="https://github.com/berndverhofstadt/dmarc-shield"
+          >View the source</a
+        >
+      </div>
+
+      <figure>
+        <img
+          src="./assets/screenshots/verified.png"
+          width="1280"
+          height="720"
+          alt="Outlook message with the DMARC Shield pane showing a green shield and the word Verified."
+        />
+        <figcaption>
+          A verified sender: DMARC passed and the domain tells mail servers to reject fakes.
+        </figcaption>
+      </figure>
+
+      <h2>Three clear results</h2>
+      <div class="grid states">
+        <div class="card state-green">
+          <h3>✓ Verified</h3>
+          <p>
+            The message really comes from the sender's domain, and that domain tells mail servers to
+            <strong>reject</strong> anyone who fakes it. Mail from inside your own organisation is
+            also verified.
+          </p>
+        </div>
+        <div class="card state-blue">
+          <h3>✓ Authenticated</h3>
+          <p>
+            The message really comes from the sender's domain, but the domain doesn't fully block
+            fakes (its DMARC policy is quarantine or none), or the policy isn't known.
+          </p>
+        </div>
+        <div class="card state-red">
+          <h3>✕ Not protected</h3>
+          <p>
+            The sender couldn't be verified, the domain publishes no DMARC policy, or there are
+            signs of forgery, such as faked headers, a mismatched sender or a lookalike domain.
+          </p>
+        </div>
+      </div>
+
+      <h2>What it checks</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>DMARC, SPF and DKIM</h3>
+          <p>
+            Shows each result your mail server recorded, with the domains involved, in plain
+            language.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Forwarded mail (ARC)</h3>
+          <p>
+            Mailing lists and forwarders often break SPF and DKIM. When your mail server trusts the
+            forwarder's ARC record, DMARC Shield shows the original result and who forwarded it.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Forged headers</h3>
+          <p>
+            Senders can insert fake authentication headers. DMARC Shield only trusts the one added
+            by your own mail server, and flags conflicting or contradicting headers.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Lookalike domains</h3>
+          <p>
+            Warns about mixed alphabets (pаypal with a Cyrillic “а”), confusable characters,
+            lookalikes of your own domain, and Reply-To addresses that imitate the sender.
+          </p>
+        </div>
+      </div>
+
+      <figure>
+        <img
+          src="./assets/screenshots/unprotected.png"
+          width="1280"
+          height="720"
+          alt="DMARC Shield pane showing a red shield, Not protected, with warnings about a failed DMARC check."
+        />
+        <figcaption>
+          A spoofed message: DMARC failed and replies would go to a different domain.
+        </figcaption>
+      </figure>
+
+      <h2>Privacy by design</h2>
+      <ul>
+        <li>
+          No server, no account, no tracking, no analytics. There is no DMARC Shield backend at all.
+        </li>
+        <li>
+          Headers are read and analysed in the add-in, inside Outlook. They are never sent anywhere.
+        </li>
+        <li>
+          Optional: if your mail provider doesn't record the sender's policy (common with Microsoft
+          365), you can choose to look it up. Only the sender's domain name is sent, to a DNS
+          resolver you choose (Quad9, Cloudflare or Google). This is off by default.
+        </li>
+        <li>
+          A strict Content Security Policy enforces this in the browser. Read the
+          <a href="./privacy.html">privacy policy</a> for details.
+        </li>
+      </ul>
+
+      <h2>Where it works</h2>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Outlook</th>
+            <th scope="col">Supported</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Outlook on the web (Microsoft 365, Outlook.com)</td>
+            <td>Yes</td>
+          </tr>
+          <tr>
+            <td>New Outlook for Windows</td>
+            <td>Yes</td>
+          </tr>
+          <tr>
+            <td>Classic Outlook for Windows (Microsoft 365, version 1910 or later)</td>
+            <td>Yes</td>
+          </tr>
+          <tr>
+            <td>Outlook for Mac</td>
+            <td>Yes</td>
+          </tr>
+          <tr>
+            <td>Outlook for iOS and Android</td>
+            <td>No. Microsoft doesn't let mobile add-ins read message headers.</td>
+          </tr>
+          <tr>
+            <td>Mailboxes on Exchange Server (on-premises)</td>
+            <td>No. Requires a newer Outlook add-in API version.</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="meta">
+        DMARC Shield runs when you open it on a message. Pin the pane (Microsoft 365 work and school
+        accounts) to check every message you select automatically.
+      </p>
+
+      <h2>Limits</h2>
+      <p>
+        DMARC Shield reports what your mail server recorded; it doesn't re-verify signatures itself.
+        A verified sender proves where a message came from, not that its content is safe. Stay alert
+        for unexpected requests, links and attachments.
+      </p>
+    </main>
+    <footer class="site">
+      <span>© 2026 Bernd Verhofstadt · MIT licence</span>
+      <a href="./privacy.html">Privacy policy</a>
+      <a href="./terms.html">Terms of use</a>
+      <a href="./support.html">Support</a>
+    </footer>
+  </body>
+</html>

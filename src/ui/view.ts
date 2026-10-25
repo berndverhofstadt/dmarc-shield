@@ -31,7 +31,12 @@ export interface VerdictView {
   via?: string;
 }
 
-const display = (domain: string | undefined): string => (domain ? toUnicode(domain) : '?');
+/** Unicode form for reading; IDNs also show the ASCII form, so homoglyphs are visible. */
+const display = (domain: string | undefined): string => {
+  if (!domain) return '?';
+  const u = toUnicode(domain);
+  return u === domain.toLowerCase() ? u : `${u} (${domain.toLowerCase()})`;
+};
 
 /** The domain the verdict is about, for messages. */
 export function subjectDomain(v: Verdict, a: Analysis): string {

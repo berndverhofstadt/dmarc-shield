@@ -160,6 +160,9 @@ export const de: Messages = {
   'settings.storage':
     'Einstellungen werden in Ihrem eigenen Postfach gespeichert und folgen Ihnen in allen Outlook-Apps. Sie werden nie an uns gesendet.',
 
+  'tip.pin':
+    'Tipp: Heften Sie diesen Bereich an (Pinnadel oben), um jede Nachricht automatisch zu prüfen. Anheften ist für Geschäfts- und Schulkonten von Microsoft 365 verfügbar.',
+
   'footer.privacy': 'Datenschutz',
   'footer.about': 'Info',
   'footer.version': 'Version {version}',
@@ -167,7 +170,7 @@ export const de: Messages = {
   'infobar.verified': 'DMARC Shield: verifizierter Absender ({domain}).',
   'infobar.internal': 'DMARC Shield: interne Nachricht Ihrer Organisation.',
   'infobar.authenticated':
-    'DMARC Shield: Absender authentifiziert ({domain}), aber die Domain blockiert Fälschungen nicht vollständig.',
+    'DMARC Shield: Absender authentifiziert ({domain}), Fälschungen nicht voll blockiert.',
   'infobar.unprotected':
     'DMARC Shield: Dieser Absender konnte nicht verifiziert werden. Vorsicht bei Links und Anhängen.',
 };

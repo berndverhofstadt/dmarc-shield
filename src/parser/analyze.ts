@@ -239,8 +239,8 @@ export function analyze(input: string | readonly Header[], ctx: AnalysisContext 
   // From-domain lookalikes
   if (from) {
     const risk = analyzeDomain(from.domain);
-    if (risk.mixedScript) forgery('from-mixed-script', { domain: risk.unicode });
-    else if (risk.wholeScriptConfusable) forgery('from-confusable', { domain: risk.unicode });
+    if (risk.mixedScript) forgery('from-mixed-script', { domain: from.domain });
+    else if (risk.wholeScriptConfusable) forgery('from-confusable', { domain: from.domain });
     else if (risk.isIdn) notice('idn-from', { domain: risk.unicode, ascii: from.domain });
 
     const userDomain = ctx.userEmail ? domainOf(ctx.userEmail) : '';

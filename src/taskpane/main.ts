@@ -374,18 +374,20 @@ function startOffice(): void {
     },
   });
   applyOfficeTheme();
+  // Pinning is the only way to check messages without opening the pane each time.
+  $('pin-tip').hidden = false;
   wireSettings(rerender);
   onItemChanged(() => void evaluateOfficeItem());
   void evaluateOfficeItem();
 }
 
-function startDemo(sample: DemoSample, lang: string | null): void {
+function startDemo(sample: DemoSample, lang: string | null, banner: boolean): void {
   init({
     store: memoryStore(lang ? { language: lang as Locale } : {}),
     displayLanguage: navigator.language,
     lookup: async () => sample.dnsPolicy ?? null,
   });
-  $('demo-banner').hidden = false;
+  $('demo-banner').hidden = !banner;
   wireSettings(rerender);
   void show(sample.headers, sample.ctx ?? {}, ++generation);
 }
@@ -400,7 +402,8 @@ function boot(): void {
   const params = new URLSearchParams(location.search);
   const demoName = params.get('demo');
   const sample = demoName !== null ? DEMOS[demoName] : undefined;
-  if (sample) return startDemo(sample, params.get('lang'));
+  // `clean=1` hides the demo banner, for Store screenshots only.
+  if (sample) return startDemo(sample, params.get('lang'), params.get('clean') !== '1');
   if (typeof Office === 'undefined') return startOutside();
   Office.onReady((info) =>
     info.host === Office.HostType.Outlook ? startOffice() : startOutside(),

@@ -1,0 +1,104 @@
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  width: 1280px;
+  height: 720px;
+  overflow: hidden;
+}
+body {
+  font:
+    16px/1.4 'Segoe UI',
+    Roboto,
+    Arial,
+    sans-serif;
+  background: linear-gradient(135deg, #0b5c2a, #137a33 60%, #1b8a3a);
+  color: #242424;
+}
+.caption {
+  height: 96px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 40px;
+  color: #fff;
+  font-size: 30px;
+  font-weight: 600;
+}
+.caption img {
+  width: 48px;
+  height: 48px;
+}
+.window {
+  margin: 0 40px;
+  height: 600px;
+  background: #fff;
+  border-radius: 10px 10px 0 0;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+.toolbar {
+  height: 40px;
+  background: #0f6cbd;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  color: #fff;
+}
+.toolbar span {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+}
+.toolbar b {
+  margin-left: 10px;
+  font-weight: 600;
+}
+.content {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  height: 560px;
+}
+.message {
+  padding: 24px 32px;
+  border-right: 1px solid #e0e0e0;
+}
+.message h1 {
+  font-size: 22px;
+  margin: 0 0 18px;
+}
+.from {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 28px;
+  color: #424242;
+}
+.avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #c7d7c9;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  color: #0b5c2a;
+}
+.body i {
+  display: block;
+  height: 12px;
+  background: #ececec;
+  border-radius: 6px;
+  margin: 14px 0;
+}
+.body i.short {
+  width: 60%;
+}
+.pane-slot {
+  width: 380px;
+  height: 560px;
+}

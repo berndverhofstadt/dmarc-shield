@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; style-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+    />
+    <meta name="referrer" content="no-referrer" />
+    <meta
+      name="description"
+      content="Install DMARC Shield, frequently asked questions and how to get help."
+    />
+    <title>Support · DMARC Shield</title>
+    <link rel="icon" type="image/png" href="./assets/icon-32.png" />
+    <link rel="stylesheet" href="./site/site.css" />
+  </head>
+  <body>
+    <a class="skip" href="#content">Skip to content</a>
+    <header class="site">
+      <a class="brand" href="./index.html"
+        ><img src="./assets/icon-32.png" width="32" height="32" alt="" /> DMARC Shield</a
+      >
+      <nav aria-label="Site">
+        <a href="./index.html">About</a>
+        <a href="./privacy.html">Privacy</a>
+        <a href="./terms.html">Terms</a>
+        <a href="./support.html">Support</a>
+        <a href="https://github.com/berndverhofstadt/dmarc-shield">Source code</a>
+      </nav>
+    </header>
+    <main id="content">
+      <h1>Support</h1>
+      <p class="lead">
+        DMARC Shield is a free community project. Help is available through GitHub.
+      </p>
+
+      <h2 id="install">Install</h2>
+      <h3>From Microsoft Marketplace</h3>
+      <p>
+        In Outlook, open <em>Apps</em> (or <em>Get Add-ins</em>), search for
+        <strong>DMARC Shield</strong> and choose <em>Add</em>.
+      </p>
+      <h3>For your whole organisation (administrators)</h3>
+      <p>
+        In the Microsoft 365 admin center, go to
+        <em>Settings → Integrated apps → Upload custom apps</em>, choose <em>Office Add-in</em>, and
+        provide the manifest URL
+        <code>https://berndverhofstadt.github.io/dmarc-shield/manifest.xml</code>.
+      </p>
+      <h3>Just for you (sideloading)</h3>
+      <ol>
+        <li>
+          Download <a href="./manifest.xml" download>manifest.xml</a> (also attached to every
+          <a href="https://github.com/berndverhofstadt/dmarc-shield/releases">GitHub release</a>).
+        </li>
+        <li>
+          Open <a href="https://aka.ms/olksideload">aka.ms/olksideload</a> in Outlook on the web.
+        </li>
+        <li>
+          Choose <em>My add-ins → Custom add-ins → Add a custom add-in → Add from file</em> and
+          select the manifest.
+        </li>
+      </ol>
+
+      <h2>Using it</h2>
+      <ol>
+        <li>Open a message and choose <em>Apps → DMARC Shield → Check sender</em>.</li>
+        <li>
+          Pin the pane to check every message you select automatically (Microsoft 365 work and
+          school accounts).
+        </li>
+        <li>Expand <em>What does this mean?</em> for an explanation of each result.</li>
+      </ol>
+
+      <h2>Frequently asked questions</h2>
+      <h3>Why is a Microsoft 365 message blue instead of green?</h3>
+      <p>
+        Exchange Online doesn't write the sender's DMARC policy into the headers. Without it, DMARC
+        Shield can't claim the domain rejects fakes. Use <em>Look up policy</em> (or enable
+        automatic lookups in the settings) to fetch the policy from DNS.
+      </p>
+      <h3>Why is mail from a gmail.com or outlook.com address blue?</h3>
+      <p>
+        Those domains publish a DMARC policy of <code>p=none</code> (monitor only), so a forged
+        gmail.com sender isn't rejected everywhere. DMARC Shield reports this honestly.
+      </p>
+      <h3>Does it work on my phone?</h3>
+      <p>
+        No. Outlook for iOS and Android don't allow add-ins to read message headers (Microsoft
+        Mailbox API 1.8), so DMARC Shield is not offered there.
+      </p>
+      <h3>Why doesn't it run automatically?</h3>
+      <p>
+        Outlook only starts add-ins when you open them. Pinning the pane is the closest to automatic
+        that Outlook currently allows.
+      </p>
+      <h3>Is my email sent anywhere?</h3>
+      <p>No. See the <a href="./privacy.html">privacy policy</a>.</p>
+
+      <h2>Report a problem</h2>
+      <p>
+        Open an issue at
+        <a href="https://github.com/berndverhofstadt/dmarc-shield/issues"
+          >github.com/berndverhofstadt/dmarc-shield/issues</a
+        >. Mention your Outlook version and the result you expected. If a result looks wrong, the
+        message's <em>Authentication-Results</em> headers help a lot. Remove anything private first.
+        Never post full messages.
+      </p>
+      <h2>Security issues</h2>
+      <p>
+        Please report vulnerabilities privately via
+        <a href="https://github.com/berndverhofstadt/dmarc-shield/security/advisories/new"
+          >GitHub security advisories</a
+        >, not in public issues.
+      </p>
+    </main>
+    <footer class="site">
+      <span>© 2026 Bernd Verhofstadt · MIT licence</span>
+      <a href="./privacy.html">Privacy policy</a>
+      <a href="./terms.html">Terms of use</a>
+      <a href="./support.html">Support</a>
+    </footer>
+  </body>
+</html>

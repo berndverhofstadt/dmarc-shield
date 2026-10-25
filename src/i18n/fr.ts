@@ -159,6 +159,9 @@ export const fr: Messages = {
   'settings.storage':
     'Les paramètres sont stockés dans votre propre boîte aux lettres et vous suivent dans toutes les applications Outlook. Ils ne nous sont jamais envoyés.',
 
+  'tip.pin':
+    'Astuce : épinglez ce volet (icône en haut) pour vérifier automatiquement chaque message. L’épinglage est disponible pour les comptes professionnels et scolaires Microsoft 365.',
+
   'footer.privacy': 'Confidentialité',
   'footer.about': 'À propos',
   'footer.version': 'Version {version}',
@@ -166,7 +169,7 @@ export const fr: Messages = {
   'infobar.verified': 'DMARC Shield : expéditeur vérifié ({domain}).',
   'infobar.internal': 'DMARC Shield : message interne de votre organisation.',
   'infobar.authenticated':
-    'DMARC Shield : expéditeur authentifié ({domain}), mais le domaine ne bloque pas entièrement les usurpations.',
+    'DMARC Shield : expéditeur authentifié ({domain}), usurpations pas entièrement bloquées.',
   'infobar.unprotected':
     'DMARC Shield : cet expéditeur n’a pas pu être vérifié. Prudence avec les liens et pièces jointes.',
 };
