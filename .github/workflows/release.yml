@@ -41,7 +41,7 @@ jobs:
         run: |
           cp dist/manifest.xml manifest.xml
           (cd dist && zip -qr ../dmarc-shield-dist.zip .)
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: release-assets
           path: |
