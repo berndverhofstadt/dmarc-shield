@@ -160,6 +160,52 @@ export const de: Messages = {
   'settings.storage':
     'Einstellungen werden in Ihrem eigenen Postfach gespeichert und folgen Ihnen in allen Outlook-Apps. Sie werden nie an uns gesendet.',
 
+  'bimi.heading': 'Markenlogo (BIMI)',
+  'bimi.badge.verified': 'Verifiziertes Logo',
+  'bimi.badge.logo': 'Logo, ohne Zertifikat',
+  'bimi.badge.none': 'Kein BIMI',
+  'bimi.badge.unchecked': 'Nicht geprüft',
+  'bimi.badge.invalid': 'Abgelehnt',
+  'bimi.off':
+    'Nicht geprüft. Die Prüfung kontaktiert Ihren DNS-Resolver und den Server mit dem Logo des Absenders, der Ihre IP-Adresse sieht.',
+  'bimi.button': 'Markenlogo prüfen',
+  'bimi.always': 'Immer automatisch prüfen',
+  'bimi.checking': 'BIMI von {domain} wird geprüft…',
+  'bimi.none': '{domain} veröffentlicht kein Markenlogo (BIMI).',
+  'bimi.declined': '{domain} hat sich gegen ein Markenlogo entschieden.',
+  'bimi.not-authenticated':
+    'Kein Markenlogo: BIMI setzt eine Nachricht voraus, die DMARC bestanden hat.',
+  'bimi.weak-policy':
+    'Kein Markenlogo: BIMI erfordert eine voll durchgesetzte DMARC-Richtlinie Quarantäne oder Ablehnen.',
+  'bimi.verified.VMC':
+    'Verified Mark Certificate: Das Logo von {holder} beruht auf einer eingetragenen Marke, verifiziert von {root}.',
+  'bimi.verified.CMC': 'Common Mark Certificate: Das Logo von {holder} ist von {root} verifiziert.',
+  'bimi.verified.receiver':
+    'Ihr Mailanbieter hat dieses Markenlogo und sein Zertifikat verifiziert.',
+  'bimi.logo.nocert':
+    '{domain} veröffentlicht dieses Logo ohne Markenzertifikat; niemand hat geprüft, ob es ihnen gehört.',
+  'bimi.logo.unreachable':
+    '{domain} veröffentlicht ein Logo mit Markenzertifikat, das Zertifikat konnte aber nicht geprüft werden: Der Server erlaubt Add-ins keinen Download.',
+  'bimi.logo.missing': 'Das Logo selbst konnte nicht heruntergeladen werden.',
+  'bimi.invalid':
+    'Das BIMI-Zertifikat von {domain} wurde abgelehnt: {reason}. Es wird kein Logo angezeigt.',
+  'bimi.reason.malformed': 'es ist nicht lesbar',
+  'bimi.reason.no-bimi-certificate': 'es ist kein BIMI-Zertifikat',
+  'bimi.reason.untrusted': 'es stammt nicht von einer anerkannten Zertifizierungsstelle',
+  'bimi.reason.bad-signature': 'die Signatur ist ungültig',
+  'bimi.reason.expired': 'es ist abgelaufen',
+  'bimi.reason.not-yet-valid': 'es ist noch nicht gültig',
+  'bimi.reason.domain-mismatch': 'es wurde für eine andere Domain ausgestellt',
+  'bimi.reason.no-logo': 'es enthält kein Logo',
+  'bimi.reason.receiver-fail': 'Ihr Mailanbieter konnte es nicht validieren',
+  'bimi.error': 'BIMI-Prüfung fehlgeschlagen: {message}',
+  'bimi.logoAlt': 'Markenlogo von {domain}',
+  'settings.bimi': 'Markenlogos (BIMI) automatisch prüfen',
+  'settings.bimiHelp':
+    'Nur für Nachrichten, die DMARC mit durchgesetzter Richtlinie bestanden haben. Fragt den BIMI-Eintrag über den DNS-Resolver oben ab und lädt dann Logo und Zertifikat von der darin genannten Adresse. Dieser Server sieht Ihre IP-Adresse. Das Zertifikat wird im Add-in geprüft.',
+  'help.bimi':
+    'Mit BIMI kann eine Domain ihr Logo neben ihren E-Mails zeigen. Grün: Das Logo ist durch ein Verified oder Common Mark Certificate einer anerkannten Stelle belegt. Blau: Die Domain veröffentlicht ein Logo ohne (prüfbares) Zertifikat. Grau: kein BIMI oder nicht geprüft.',
+
   'tip.pin':
     'Tipp: Heften Sie diesen Bereich an (Pinnadel oben), um jede Nachricht automatisch zu prüfen. Anheften ist für Geschäfts- und Schulkonten von Microsoft 365 verfügbar.',
 

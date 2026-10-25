@@ -3,14 +3,21 @@
  * website, Store screenshots and manual UI testing outside Outlook. They use
  * reserved example domains (RFC 2606) and documentation IPs (RFC 5737).
  */
+import type { BimiOutcome } from '../bimi/lookup';
 import type { AnalysisContext } from '../parser/analyze';
 import type { PolicyInfo } from '../parser/policy';
+
+/** Synthetic logos (not real brands) for demo BIMI results. */
+const demoLogo = (bg: string, letter: string) =>
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="${bg}"/><text x="50" y="68" font-family="Arial, sans-serif" font-size="58" font-weight="700" fill="#fff" text-anchor="middle">${letter}</text></svg>`;
 
 export interface DemoSample {
   headers: string;
   ctx?: AnalysisContext;
   /** Policy the fake DNS lookup returns in demo mode. */
   dnsPolicy?: PolicyInfo;
+  /** Result the fake BIMI check returns in demo mode. */
+  bimi?: BimiOutcome;
 }
 
 export const DEMOS: Record<string, DemoSample> = {
@@ -24,6 +31,20 @@ From: Example Bank <service@example.com>
 To: you@example.net
 Subject: Your statement is ready
 `,
+    bimi: {
+      kind: 'verified',
+      domain: 'example.com',
+      source: 'client',
+      logoSvg: demoLogo('#0b5394', 'E'),
+      mark: {
+        ok: true,
+        kind: 'VMC',
+        root: 'DigiCert Verified Mark Root CA',
+        holder: 'Example Bank',
+        notAfter: new Date('2027-06-30T23:59:59Z'),
+        logoSvg: demoLogo('#0b5394', 'E'),
+      },
+    },
   },
   authenticated: {
     headers: `Authentication-Results: spf=pass (sender IP is 192.0.2.25)
@@ -36,6 +57,13 @@ To: you@contoso.example
 Subject: Order confirmation
 `,
     dnsPolicy: { p: 'quarantine', source: 'dns', resolver: 'Quad9', recordDomain: 'example.org' },
+    bimi: {
+      kind: 'logo',
+      domain: 'example.org',
+      source: 'client',
+      logoSvg: demoLogo('#c2410c', 'S'),
+      cert: 'none',
+    },
   },
   arc: {
     headers: `Authentication-Results: mx.google.com;

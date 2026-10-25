@@ -223,6 +223,83 @@ pre,
   gap: 8px;
 }
 
+/* BIMI */
+.bimi {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 12px;
+  align-items: start;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-left: 6px solid var(--tone);
+  border-radius: var(--radius);
+}
+
+.bimi[data-tone='green'] {
+  --tone: var(--green);
+}
+.bimi[data-tone='blue'] {
+  --tone: var(--blue);
+}
+.bimi[data-tone='grey'] {
+  --tone: var(--grey);
+}
+.bimi.warn {
+  border-left-color: var(--amber);
+}
+
+.bimi-logo img,
+.bimi-placeholder {
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+  display: block;
+  object-fit: contain;
+  background: #ffffff;
+}
+
+.bimi-placeholder {
+  display: grid;
+  place-items: center;
+  background: var(--surface);
+  color: var(--muted);
+  font-weight: 700;
+  font-size: 1.4rem;
+}
+
+.bimi-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  margin-bottom: 4px;
+}
+
+.bimi-head h2 {
+  margin: 0;
+}
+
+.bimi-body .actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.bimi-body .actions:empty {
+  display: none;
+}
+
+.badge[data-tone='green'] {
+  color: var(--green);
+}
+.badge[data-tone='blue'] {
+  color: var(--blue);
+}
+.badge[data-tone='grey'] {
+  color: var(--muted);
+}
+
 /* Findings */
 .findings ul {
   list-style: none;
@@ -418,7 +495,8 @@ select,
   .verdict,
   .finding,
   .panel,
-  .dns {
+  .dns,
+  .bimi {
     border: 1px solid CanvasText;
   }
   .verdict h1,

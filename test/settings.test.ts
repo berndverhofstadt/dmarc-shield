@@ -9,18 +9,26 @@ describe('settings', () => {
       parseSettings({
         showInfoBar: false,
         dnsLookup: true,
+        bimiLookup: true,
         resolver: 'google',
         language: 'fr',
         extra: 1,
       }),
-    ).toEqual({ showInfoBar: false, dnsLookup: true, resolver: 'google', language: 'fr' });
+    ).toEqual({
+      showInfoBar: false,
+      dnsLookup: true,
+      bimiLookup: true,
+      resolver: 'google',
+      language: 'fr',
+    });
     expect(
       parseSettings({ showInfoBar: 'yes', dnsLookup: 1, resolver: 'evil', language: 'xx' }),
     ).toEqual(DEFAULT_SETTINGS);
   });
 
-  it('keeps DNS lookups off by default', () => {
+  it('keeps all network features off by default', () => {
     expect(DEFAULT_SETTINGS.dnsLookup).toBe(false);
+    expect(DEFAULT_SETTINGS.bimiLookup).toBe(false);
   });
 
   it('memory store round-trips', async () => {

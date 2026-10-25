@@ -1,7 +1,10 @@
 /**
  * Task pane controller: reads headers, analyses them locally, renders the
- * verdict, and (only when asked) looks up the DMARC policy over DoH.
+ * verdict, and (only when asked) looks up the DMARC policy over DoH and checks
+ * BIMI.
  */
+import { bimiEligibility } from '../bimi/eligibility';
+import { type BimiOutcome, bimiFromReceiver, lookupBimi } from '../bimi/lookup';
 import { type ResolverId, RESOLVERS, lookupDmarcPolicy } from '../dns/lookup';
 import { LOCALE_NAMES, type Locale, type MessageKey, resolveLocale, setLocale, t } from '../i18n';
 import { notify } from '../office/notify';
@@ -19,6 +22,7 @@ import { toUnicode } from '../parser/punycode';
 import { type Verdict, decide } from '../parser/verdict';
 import { type Settings, type SettingsStore, memoryStore, roamingStore } from '../settings';
 import { clear, h, shield } from '../ui/dom';
+import { type BimiState, bimiView, svgDataUrl } from '../ui/bimiview';
 import { applyOfficeTheme } from '../ui/theme';
 import {
   SHIELD,
@@ -38,6 +42,7 @@ interface Env {
   store: SettingsStore;
   displayLanguage?: string;
   lookup: Lookup;
+  bimi: (domain: string, resolver: ResolverId) => Promise<BimiOutcome>;
   /** Office mode only: show the info bar for the current item. */
   notify?: (v: Verdict, a: Analysis) => void;
 }
@@ -84,7 +89,7 @@ function renderVerdict(view: VerdictView): void {
 }
 
 function hideResultSections(): void {
-  for (const id of ['dns', 'findings', 'details', 'raw']) $(id).hidden = true;
+  for (const id of ['dns', 'bimi', 'findings', 'details', 'raw']) $(id).hidden = true;
 }
 
 function renderFindings(a: Analysis): void {
@@ -208,6 +213,7 @@ function renderHelp(): void {
     h('p', {}, t('help.dkim')),
     h('p', {}, t('help.arc')),
     h('p', {}, t('help.policy')),
+    h('p', {}, t('help.bimi')),
     h('p', {}, t('help.limits')),
     h('p', {}, t('help.privacy')),
   );
@@ -216,6 +222,7 @@ function renderHelp(): void {
 function renderSettingsForm(): void {
   $<HTMLInputElement>('set-infobar').checked = settings.showInfoBar;
   $<HTMLInputElement>('set-dns').checked = settings.dnsLookup;
+  $<HTMLInputElement>('set-bimi').checked = settings.bimiLookup;
   const resolver = $<HTMLSelectElement>('set-resolver');
   resolver.replaceChildren(
     ...Object.entries(RESOLVERS).map(([id, r]) =>
@@ -237,6 +244,41 @@ function renderSettingsForm(): void {
       h('option', { value: id, selected: id === settings.language, lang: id }, name),
     ),
   );
+}
+
+function renderBimi(state: BimiState | null): void {
+  const box = $('bimi');
+  box.hidden = state === null;
+  if (!state) return;
+  const view = bimiView(state);
+  box.dataset.tone = view.tone;
+  box.classList.toggle('warn', view.warn === true);
+  $('bimi-logo').replaceChildren(
+    view.logoSvg
+      ? h('img', {
+          src: svgDataUrl(view.logoSvg),
+          alt: view.logoAlt ?? '',
+          width: '56',
+          height: '56',
+        })
+      : h('span', { class: 'bimi-placeholder', 'aria-hidden': 'true' }, 'B'),
+  );
+  const badge = $('bimi-badge');
+  badge.textContent = view.badge;
+  badge.dataset.tone = view.tone;
+  $('bimi-text').replaceChildren(...view.text.map((line) => h('p', {}, line)));
+  const actions = $('bimi-actions');
+  clear(actions);
+  if (view.offer) {
+    const check = h('button', { type: 'button', class: 'button' }, t('bimi.button'));
+    check.addEventListener('click', () => void updateBimi(generation, true));
+    const always = h('button', { type: 'button', class: 'button secondary' }, t('bimi.always'));
+    always.addEventListener('click', () => {
+      $<HTMLDetailsElement>('settings').open = true;
+      $('set-bimi').focus();
+    });
+    actions.append(check, always);
+  }
 }
 
 function present(): void {
@@ -262,12 +304,67 @@ async function runLookup(gen: number): Promise<void> {
       current.v = decide(current.a, policy);
       present();
       renderDns({ kind: 'hidden' });
+      void updateBimi(gen, false);
     } else {
       renderDns({ kind: 'norecord', domain });
     }
   } catch (e) {
     if (gen !== generation) return;
     renderDns({ kind: 'failed', message: e instanceof Error ? e.message : String(e) });
+  }
+}
+
+function bimiDomain(c: Current): string | undefined {
+  return c.v.policyDomain ?? c.a.dmarc?.headerFrom ?? c.a.from?.domain;
+}
+
+/**
+ * BIMI is evaluated only for mail that passed DMARC under an enforcing policy.
+ * A result recorded by a BIMI-aware receiver is used as-is (no network);
+ * otherwise we check ourselves, but only when the user asked (`requested`) or
+ * enabled automatic checks.
+ */
+async function updateBimi(gen: number, requested: boolean): Promise<void> {
+  if (!current) return;
+  const domain = bimiDomain(current);
+  const receiver = domain ? bimiFromReceiver(current.a, domain) : null;
+  let eligibility = bimiEligibility(current.v);
+  if (receiver && eligibility !== 'not-authenticated') {
+    return renderBimi({ kind: 'outcome', outcome: receiver });
+  }
+  if (eligibility === 'not-authenticated' || eligibility === 'weak-policy' || !domain) {
+    return renderBimi({
+      kind: 'ineligible',
+      reason: eligibility === 'weak-policy' ? 'weak-policy' : 'not-authenticated',
+    });
+  }
+  if (!requested && !settings.bimiLookup) return renderBimi({ kind: 'off', domain });
+
+  renderBimi({ kind: 'checking', domain });
+  try {
+    if (eligibility === 'needs-policy') {
+      // BIMI depends on the DMARC policy; look it up first (same resolver).
+      const policy = await env.lookup(domain, settings.resolver);
+      if (gen !== generation || !current) return;
+      if (policy) {
+        current.v = decide(current.a, policy);
+        present();
+        renderDns({ kind: 'hidden' });
+      }
+      eligibility = bimiEligibility(current.v);
+      if (eligibility !== 'eligible') {
+        return renderBimi({
+          kind: 'ineligible',
+          reason: eligibility === 'not-authenticated' ? 'not-authenticated' : 'weak-policy',
+        });
+      }
+    }
+    const outcome = await env.bimi(domain, settings.resolver);
+    if (gen !== generation) return;
+    renderBimi({ kind: 'outcome', outcome });
+  } catch (e) {
+    if (gen !== generation) return;
+    renderBimi({ kind: 'error', message: e instanceof Error ? e.message : String(e) });
   }
 }
 
@@ -282,6 +379,7 @@ async function show(headers: string, ctx: AnalysisContext, gen: number): Promise
   } else {
     renderDns({ kind: 'hidden' });
   }
+  await updateBimi(gen, false);
 }
 
 async function evaluateOfficeItem(): Promise<void> {
@@ -312,6 +410,7 @@ function wireSettings(onChange: (before: Settings) => void): void {
     const next: Settings = {
       showInfoBar: $<HTMLInputElement>('set-infobar').checked,
       dnsLookup: $<HTMLInputElement>('set-dns').checked,
+      bimiLookup: $<HTMLInputElement>('set-bimi').checked,
       resolver: $<HTMLSelectElement>('set-resolver').value as ResolverId,
       language: $<HTMLSelectElement>('set-language').value as Settings['language'],
     };
@@ -352,6 +451,7 @@ function init(e: Env): void {
 
 function rerender(before: Settings): void {
   if (!current) return;
+  if (settings.bimiLookup && !before.bimiLookup) void updateBimi(generation, false);
   if (current.v.needsPolicy && current.v.policyDomain) {
     present();
     if (settings.dnsLookup && !before.dnsLookup) void runLookup(generation);
@@ -368,6 +468,7 @@ function startOffice(): void {
     store: roamingStore(Office.context.roamingSettings),
     displayLanguage: Office.context.displayLanguage,
     lookup: async (domain, resolver) => (await lookupDmarcPolicy(domain, resolver)).policy ?? null,
+    bimi: (domain, resolver) => lookupBimi(domain, resolver),
     notify: (v, a) => {
       const item = currentItem();
       if (item) notify(item, v, a);
@@ -383,9 +484,11 @@ function startOffice(): void {
 
 function startDemo(sample: DemoSample, lang: string | null, banner: boolean): void {
   init({
-    store: memoryStore(lang ? { language: lang as Locale } : {}),
+    // Demo lookups are fake (no network), so BIMI can be on by default here.
+    store: memoryStore({ bimiLookup: true, ...(lang ? { language: lang as Locale } : {}) }),
     displayLanguage: navigator.language,
     lookup: async () => sample.dnsPolicy ?? null,
+    bimi: async (domain) => sample.bimi ?? { kind: 'none', domain },
   });
   $('demo-banner').hidden = !banner;
   wireSettings(rerender);
@@ -393,7 +496,12 @@ function startDemo(sample: DemoSample, lang: string | null, banner: boolean): vo
 }
 
 function startOutside(): void {
-  init({ store: memoryStore(), displayLanguage: navigator.language, lookup: async () => null });
+  init({
+    store: memoryStore(),
+    displayLanguage: navigator.language,
+    lookup: async () => null,
+    bimi: async (domain) => ({ kind: 'none', domain }),
+  });
   wireSettings(() => renderVerdict({ ...simpleView('unsupported'), summary: t('reason.outside') }));
   renderVerdict({ ...simpleView('unsupported'), summary: t('reason.outside') });
 }

@@ -12,7 +12,8 @@ export function isValidQueryName(name: string): boolean {
   return (
     name.length <= 253 &&
     labels.length >= 2 &&
-    labels.every((l, i) => LABEL.test(l) || (i === 0 && UNDERSCORE_LABEL.test(l)))
+    // Service labels such as `_dmarc` and `_bimi` may appear anywhere but the TLD.
+    labels.every((l, i) => LABEL.test(l) || (i < labels.length - 1 && UNDERSCORE_LABEL.test(l)))
   );
 }
 

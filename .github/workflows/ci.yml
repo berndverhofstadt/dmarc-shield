@@ -27,7 +27,8 @@ jobs:
       - name: Check that the built task pane keeps its strict CSP
         run: |
           grep -q "default-src 'none'" dist/taskpane.html
-          grep -q "connect-src https://dns.quad9.net https://cloudflare-dns.com https://dns.google;" dist/taskpane.html
+          grep -q "connect-src https:;" dist/taskpane.html
+          grep -q "img-src 'self' data:;" dist/taskpane.html
           ! grep -R --include=*.js -E "XMLHttpRequest|sendBeacon|new WebSocket" dist/
       - uses: actions/upload-artifact@v7
         with:

@@ -12,7 +12,7 @@ import {
 } from './address';
 import { type ArcAnalysis, analyzeArc } from './arc';
 import { type AuthResults, firstResult, parseAuthResults, resultsFor } from './authres';
-import { type Header, findHeaders, parseHeaders } from './headers';
+import { type Header, findHeaders, firstHeader, parseHeaders } from './headers';
 import { analyzeDomain, looksLike } from './lookalike';
 import { type PolicyInfo, policyFromResInfo } from './policy';
 import { toASCII } from './punycode';
@@ -57,6 +57,15 @@ export interface Analysis {
   compauth?: { result: string; reason?: string };
   arc: ArcAnalysis;
   arcRescue?: { sealer: string | null; headerFrom: string; policy?: PolicyInfo };
+  /** BIMI as evaluated by the receiving server, from the trusted A-R block. */
+  bimi?: {
+    result: string;
+    domain?: string;
+    /** `policy.authority`: pass = mark certificate validated by the receiver. */
+    authority?: string;
+    /** Logo from the receiver's BIMI-Indicator header (only when bimi=pass). */
+    indicatorSvg?: string;
+  };
   from?: Mailbox;
   replyTo: Mailbox[];
   findings: Finding[];
@@ -76,6 +85,16 @@ const SECONDARY = new Set([
   'authentication-results-original',
   'arc-authentication-results',
 ]);
+
+function decodeIndicator(value: string): string | null {
+  try {
+    const bin = atob(value.replace(/\s+/g, ''));
+    const text = new TextDecoder('utf-8').decode(Uint8Array.from(bin, (c) => c.charCodeAt(0)));
+    return /<svg[\s>]/i.test(text) ? text : null;
+  } catch {
+    return null;
+  }
+}
 
 function sameDomain(a: string, b: string): boolean {
   try {
@@ -212,6 +231,22 @@ export function analyze(input: string | readonly Header[], ctx: AnalysisContext 
       if (dup) forgery('ar-duplicate-authserv', { authservId: topAr.authservId });
     }
     if (otherArs.length > 0) notice('multiple-hops', { count: String(otherArs.length + 1) });
+  }
+
+  // BIMI, as recorded by the receiver. A BIMI-Indicator header is only trusted when
+  // the receiver itself says bimi=pass: BIMI-aware receivers strip sender-supplied
+  // ones, but receivers without BIMI support (e.g. Exchange Online) pass them through.
+  const bimi = firstResult(topAr, 'bimi');
+  if (bimi) {
+    a.bimi = { result: bimi.result };
+    if (bimi.props['header.d']) a.bimi.domain = bimi.props['header.d'].toLowerCase();
+    if (bimi.props['policy.authority'])
+      a.bimi.authority = bimi.props['policy.authority'].toLowerCase();
+    const indicator = firstHeader(headers, 'bimi-indicator');
+    if (bimi.result === 'pass' && indicator) {
+      const svg = decodeIndicator(indicator.value);
+      if (svg) a.bimi.indicatorSvg = svg;
+    }
   }
 
   // ARC

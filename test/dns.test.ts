@@ -67,7 +67,8 @@ describe('DNS wire format', () => {
     expect(isValidQueryName('example.com.')).toBe(true);
     expect(isValidQueryName('com')).toBe(false);
     expect(isValidQueryName('-bad.example')).toBe(false);
-    expect(isValidQueryName('a._dmarc.example')).toBe(false);
+    expect(isValidQueryName('default._bimi.example.com')).toBe(true);
+    expect(isValidQueryName('example._tld')).toBe(false);
     expect(isValidQueryName('a'.repeat(64) + '.example')).toBe(false);
     expect(() => encodeQuery('bad name.example')).toThrow();
   });

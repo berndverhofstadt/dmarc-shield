@@ -11,7 +11,10 @@ export default tseslint.config(
     rules: {
       'no-restricted-globals': [
         'error',
-        { name: 'XMLHttpRequest', message: 'Network access is only allowed in src/dns.' },
+        {
+          name: 'XMLHttpRequest',
+          message: 'Network access is only allowed in src/dns and src/bimi/lookup.ts.',
+        },
         { name: 'WebSocket', message: 'Network access is not allowed.' },
         { name: 'EventSource', message: 'Network access is not allowed.' },
       ],
@@ -19,12 +22,19 @@ export default tseslint.config(
   },
   {
     files: ['src/**/*.ts'],
-    ignores: ['src/dns/**'],
+    // The only modules allowed to make network requests (both opt-in).
+    ignores: ['src/dns/**', 'src/bimi/lookup.ts'],
     rules: {
       'no-restricted-globals': [
         'error',
-        { name: 'fetch', message: 'Network access is only allowed in src/dns.' },
-        { name: 'XMLHttpRequest', message: 'Network access is only allowed in src/dns.' },
+        {
+          name: 'fetch',
+          message: 'Network access is only allowed in src/dns and src/bimi/lookup.ts.',
+        },
+        {
+          name: 'XMLHttpRequest',
+          message: 'Network access is only allowed in src/dns and src/bimi/lookup.ts.',
+        },
         { name: 'WebSocket', message: 'Network access is not allowed.' },
         { name: 'EventSource', message: 'Network access is not allowed.' },
       ],

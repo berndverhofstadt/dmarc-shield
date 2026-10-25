@@ -5,13 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <!--
       Strict CSP. The only external script is Office.js (Microsoft CDN, required by
-      Store policy 1120.1). connect-src only allows the three opt-in DoH resolvers;
-      the code contacts them only after the user asks for a DNS lookup.
+      Store policy 1120.1). connect-src allows HTTPS because the opt-in BIMI check
+      downloads logos/certificates from wherever the sender's BIMI record points.
+      Network code only lives in src/dns/ and src/bimi/lookup.ts (ESLint-enforced)
+      and runs only after the user asks. Logos are shown as data: images only.
       Keep in sync with staticwebapp.config.json and SECURITY.md.
     -->
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'none'; script-src 'self' https://appsforoffice.microsoft.com; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src https://dns.quad9.net https://cloudflare-dns.com https://dns.google; frame-src 'none'; worker-src 'none'; manifest-src 'none'; media-src 'none'; object-src 'none'; form-action 'none'; base-uri 'none'; upgrade-insecure-requests"
+      content="default-src 'none'; script-src 'self' https://appsforoffice.microsoft.com; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src https:; frame-src 'none'; worker-src 'none'; manifest-src 'none'; media-src 'none'; object-src 'none'; form-action 'none'; base-uri 'none'; upgrade-insecure-requests"
     />
     <meta name="referrer" content="no-referrer" />
     <meta name="color-scheme" content="light dark" />
@@ -42,6 +44,25 @@
       </section>
 
       <section id="dns" class="dns" hidden aria-live="polite"></section>
+
+      <section
+        id="bimi"
+        class="bimi"
+        data-tone="grey"
+        aria-labelledby="bimi-heading"
+        aria-live="polite"
+        hidden
+      >
+        <div id="bimi-logo" class="bimi-logo"></div>
+        <div class="bimi-body">
+          <div class="bimi-head">
+            <h2 id="bimi-heading" data-i18n="bimi.heading"></h2>
+            <span id="bimi-badge" class="badge"></span>
+          </div>
+          <div id="bimi-text"></div>
+          <div id="bimi-actions" class="actions"></div>
+        </div>
+      </section>
 
       <section id="findings" class="findings" aria-labelledby="findings-heading" hidden>
         <h2 id="findings-heading" class="visually-hidden" data-i18n="findings.heading"></h2>
@@ -79,6 +100,11 @@
             <label for="set-resolver" data-i18n="settings.resolver"></label>
             <select id="set-resolver"></select>
           </div>
+          <label class="check">
+            <input type="checkbox" id="set-bimi" aria-describedby="bimi-help" />
+            <span data-i18n="settings.bimi"></span>
+          </label>
+          <p id="bimi-help" class="help" data-i18n="settings.bimiHelp"></p>
           <div class="field">
             <label for="set-language" data-i18n="settings.language"></label>
             <select id="set-language"></select>

@@ -156,6 +156,51 @@ export const nl: Messages = {
   'settings.storage':
     'Instellingen worden in uw eigen mailbox bewaard, zodat ze u volgen in alle Outlook-apps. Ze worden nooit naar ons gestuurd.',
 
+  'bimi.heading': 'Merklogo (BIMI)',
+  'bimi.badge.verified': 'Geverifieerd logo',
+  'bimi.badge.logo': 'Logo, geen certificaat',
+  'bimi.badge.none': 'Geen BIMI',
+  'bimi.badge.unchecked': 'Niet gecontroleerd',
+  'bimi.badge.invalid': 'Afgewezen',
+  'bimi.off':
+    'Niet gecontroleerd. De controle neemt contact op met uw DNS-resolver en met de server van het logo van de afzender; die ziet uw IP-adres.',
+  'bimi.button': 'Merklogo controleren',
+  'bimi.always': 'Altijd automatisch controleren',
+  'bimi.checking': 'BIMI van {domain} controleren…',
+  'bimi.none': '{domain} publiceert geen merklogo (BIMI).',
+  'bimi.declined': '{domain} heeft gekozen geen merklogo te tonen.',
+  'bimi.not-authenticated': 'Geen merklogo: BIMI vereist een bericht dat voor DMARC is geslaagd.',
+  'bimi.weak-policy':
+    'Geen merklogo: BIMI vereist een volledig toegepast DMARC-beleid quarantaine of weigeren.',
+  'bimi.verified.VMC':
+    'Verified Mark Certificate: het logo van {holder} is gekoppeld aan een geregistreerd merk, geverifieerd door {root}.',
+  'bimi.verified.CMC':
+    'Common Mark Certificate: het logo van {holder} is geverifieerd door {root}.',
+  'bimi.verified.receiver': 'Uw e-mailprovider heeft dit merklogo en het certificaat geverifieerd.',
+  'bimi.logo.nocert':
+    '{domain} publiceert dit logo zonder merkcertificaat; niemand heeft gecontroleerd of het van hen is.',
+  'bimi.logo.unreachable':
+    '{domain} publiceert een logo met merkcertificaat, maar het certificaat kon niet worden gecontroleerd: de server staat downloaden door invoegtoepassingen niet toe.',
+  'bimi.logo.missing': 'Het logo zelf kon niet worden gedownload.',
+  'bimi.invalid':
+    'Het BIMI-certificaat van {domain} is afgewezen: {reason}. Er wordt geen logo getoond.',
+  'bimi.reason.malformed': 'het is onleesbaar',
+  'bimi.reason.no-bimi-certificate': 'het is geen BIMI-certificaat',
+  'bimi.reason.untrusted': 'het is niet uitgegeven door een erkende uitgever van merkcertificaten',
+  'bimi.reason.bad-signature': 'de handtekening is ongeldig',
+  'bimi.reason.expired': 'het is verlopen',
+  'bimi.reason.not-yet-valid': 'het is nog niet geldig',
+  'bimi.reason.domain-mismatch': 'het is uitgegeven voor een ander domein',
+  'bimi.reason.no-logo': 'het bevat geen logo',
+  'bimi.reason.receiver-fail': 'uw e-mailprovider kon het niet valideren',
+  'bimi.error': 'BIMI-controle mislukt: {message}',
+  'bimi.logoAlt': 'Merklogo van {domain}',
+  'settings.bimi': "Merklogo's (BIMI) automatisch controleren",
+  'settings.bimiHelp':
+    'Alleen voor berichten die voor DMARC zijn geslaagd met een afdwingend beleid. Zoekt het BIMI-record van de afzender op via de DNS-resolver hierboven en downloadt daarna het logo en certificaat van het adres in dat record. Die server ziet uw IP-adres. Het certificaat wordt in de invoegtoepassing gecontroleerd.',
+  'help.bimi':
+    'Met BIMI kan een domein zijn logo naast zijn mail tonen. Groen: het logo wordt ondersteund door een Verified of Common Mark Certificate van een erkende uitgever. Blauw: het domein publiceert een logo zonder (controleerbaar) certificaat. Grijs: geen BIMI, of niet gecontroleerd.',
+
   'tip.pin':
     'Tip: maak dit deelvenster vast (punaise bovenaan) om elk bericht automatisch te controleren. Vastmaken is beschikbaar voor Microsoft 365-werk- en schoolaccounts.',
 

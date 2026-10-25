@@ -152,6 +152,49 @@ export const en = {
   'settings.storage':
     'Settings are stored in your own mailbox, so they follow you across Outlook apps. They are never sent to us.',
 
+  'bimi.heading': 'Brand logo (BIMI)',
+  'bimi.badge.verified': 'Verified logo',
+  'bimi.badge.logo': 'Logo, no certificate',
+  'bimi.badge.none': 'No BIMI',
+  'bimi.badge.unchecked': 'Not checked',
+  'bimi.badge.invalid': 'Rejected',
+  'bimi.off':
+    "Not checked. Checking contacts your DNS resolver and the server that hosts the sender's logo, which can see your IP address.",
+  'bimi.button': 'Check brand logo',
+  'bimi.always': 'Always check automatically',
+  'bimi.checking': 'Checking BIMI for {domain}…',
+  'bimi.none': "{domain} doesn't publish a brand logo (BIMI).",
+  'bimi.declined': '{domain} has chosen not to show a brand logo.',
+  'bimi.not-authenticated': 'No brand logo: BIMI requires a message that passed DMARC.',
+  'bimi.weak-policy':
+    'No brand logo: BIMI requires a fully enforced DMARC policy of quarantine or reject.',
+  'bimi.verified.VMC':
+    'Verified Mark Certificate: the logo of {holder} is backed by a registered trademark, verified by {root}.',
+  'bimi.verified.CMC': 'Common Mark Certificate: the logo of {holder} is verified by {root}.',
+  'bimi.verified.receiver': 'Your mail provider verified this brand logo and its certificate.',
+  'bimi.logo.nocert':
+    '{domain} publishes this logo without a mark certificate, so nobody has verified it belongs to them.',
+  'bimi.logo.unreachable':
+    "{domain} publishes a logo with a mark certificate, but the certificate couldn't be checked: its server doesn't let add-ins download it.",
+  'bimi.logo.missing': "The logo itself couldn't be downloaded.",
+  'bimi.invalid': 'The BIMI certificate of {domain} was rejected: {reason}. No logo is shown.',
+  'bimi.reason.malformed': "it can't be read",
+  'bimi.reason.no-bimi-certificate': "it isn't a BIMI certificate",
+  'bimi.reason.untrusted': "it isn't issued by a recognised mark certificate authority",
+  'bimi.reason.bad-signature': 'its signature is invalid',
+  'bimi.reason.expired': 'it has expired',
+  'bimi.reason.not-yet-valid': "it isn't valid yet",
+  'bimi.reason.domain-mismatch': 'it was issued for a different domain',
+  'bimi.reason.no-logo': 'it contains no logo',
+  'bimi.reason.receiver-fail': "your mail provider couldn't validate it",
+  'bimi.error': 'BIMI check failed: {message}',
+  'bimi.logoAlt': 'Brand logo of {domain}',
+  'settings.bimi': 'Check brand logos (BIMI) automatically',
+  'settings.bimiHelp':
+    "Only for messages that passed DMARC with an enforcing policy. Looks up the sender's BIMI record through the DNS resolver above, then downloads the logo and certificate from the address in that record. That server can see your IP address. The certificate is checked in the add-in.",
+  'help.bimi':
+    'BIMI lets a domain show its logo next to its mail. Green: the logo is backed by a Verified or Common Mark Certificate from a recognised authority. Blue: the domain publishes a logo without a (checkable) certificate. Grey: no BIMI, or not checked.',
+
   'tip.pin':
     'Tip: pin this pane (pin icon at the top) to check every message automatically. Pinning is available for Microsoft 365 work and school accounts.',
 

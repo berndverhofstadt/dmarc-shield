@@ -11,7 +11,7 @@
     {
       "route": "/taskpane.html",
       "headers": {
-        "Content-Security-Policy": "default-src 'none'; script-src 'self' https://appsforoffice.microsoft.com; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src https://dns.quad9.net https://cloudflare-dns.com https://dns.google; frame-src 'none'; worker-src 'none'; manifest-src 'none'; media-src 'none'; object-src 'none'; form-action 'none'; base-uri 'none'; upgrade-insecure-requests",
+        "Content-Security-Policy": "default-src 'none'; script-src 'self' https://appsforoffice.microsoft.com; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src https:; frame-src 'none'; worker-src 'none'; manifest-src 'none'; media-src 'none'; object-src 'none'; form-action 'none'; base-uri 'none'; upgrade-insecure-requests",
         "Cache-Control": "no-cache"
       }
     },
